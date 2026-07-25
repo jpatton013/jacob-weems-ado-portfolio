@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Weems-Ado — Earlier Work</title>
+<meta name="description" content="Jacob Weems-Ado. Earlier work.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Hidden filter definitions shared by both tide transitions below:
+     ripple-distort warps whatever it's applied to through animated
+     turbulence, so a flat clip-path edge comes out as a wobbling,
+     organic waterline instead of a straight geometric wipe.
+     ripple-grain renders that same kind of noise as a translucent white
+     texture, blended over the tide as drifting foam/grain rather than a
+     flat color fill. -->
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <defs>
+    <filter id="ripple-distort" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.025" numOctaves="2" seed="4" result="ripple-noise">
+        <animate attributeName="baseFrequency" dur="6s" values="0.012 0.025;0.022 0.014;0.012 0.025" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="ripple-noise" scale="60" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="ripple-grain" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="9" result="grain-noise">
+        <animate attributeName="seed" dur="1s" values="9;24;9" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feColorMatrix in="grain-noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- Arriving here from explosion.html's "let's relax" button: the same
+     tide (color + drifting shimmer + ripple distortion) as the exit
+     transition into seascapes.html, except it starts already covering
+     the screen and drains away downward, revealing the page top-down —
+     reads as the water that carried you here rushing past and off,
+     rather than a hard cut in. -->
+<div class="page-enter" id="page-enter" aria-hidden="true">
+  <div class="wave-tide">
+    <div class="wave-shimmer wave-shimmer-1"></div>
+    <div class="wave-shimmer wave-shimmer-2"></div>
+    <div class="wave-grain"></div>
+  </div>
+</div>
+
+<a class="back-link" href="index.html">&larr; home</a>
+
+<!-- Soft moving caustics, fixed behind everything on this page — pure CSS,
+     three layered radial-gradient fields drifting at different speeds. -->
+<div class="water-bg" aria-hidden="true">
+  <div class="water-layer water-layer-1"></div>
+  <div class="water-layer water-layer-2"></div>
+  <div class="water-layer water-layer-3"></div>
+</div>
+
+<!-- No audio file to attach, and browsers block autoplay-with-sound
+     regardless — so this is a small procedural ambient track (filtered
+     noise, generated in earlier-work.js via the Web Audio API) behind an
+     explicit opt-in toggle rather than a silently-autoplaying <audio> tag. -->
+<button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="false">
+  <span class="sound-icon" aria-hidden="true">♪</span>
+  <span class="sound-label">waves</span>
+</button>
+
+<!-- Full-bleed, cropped to fill — deliberately the opposite of .opener's
+     usual object-fit:contain treatment used everywhere else on the site.
+     .opener-fill below overrides just enough to fill the entire viewport
+     with no letterboxing. -->
+<figure class="opener opener-fill">
+  <img src="images/earlier-water.jpg" alt="Painting">
+  <div class="scroll-hint">scroll</div>
+</figure>
+
+<main class="gallery">
+  <!-- Same building blocks as the main page (.plate with a size class,
+       .row / .row-2 / .row-3 clusters, .plate.full for a screen-filling
+       piece), each also carrying .reveal so earlier-work.js can fade/rise
+       them in as they scroll into view. -->
+
+  <figure class="plate s-lg align-l rot-n reveal"><img src="images/earlier/earlier-01.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-3">
+    <figure class="reveal"><img src="images/earlier/earlier-02.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="reveal"><img src="images/earlier/earlier-03.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="reveal"><img src="images/earlier/earlier-04.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+
+  <figure class="plate full reveal"><img src="images/earlier/earlier-05.jpg" alt="Painting" loading="lazy"></figure>
+
+  <figure class="plate s-md align-c reveal"><img src="images/earlier/earlier-06.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-2">
+    <figure class="row-narrow reveal"><img src="images/earlier/earlier-07.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="row-wide reveal"><img src="images/earlier/earlier-08.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+
+  <figure class="plate s-xl align-c rot-p reveal"><img src="images/earlier/earlier-09.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-3">
+    <figure class="reveal"><img src="images/earlier/earlier-10.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="reveal"><img src="images/earlier/earlier-11.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="reveal"><img src="images/earlier/earlier-12.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+
+  <figure class="plate s-lg2 align-r rot-n reveal"><img src="images/earlier/earlier-13.jpg" alt="Painting" loading="lazy"></figure>
+
+  <figure class="plate full reveal"><img src="images/earlier/earlier-14.jpg" alt="Painting" loading="lazy"></figure>
+
+  <figure class="plate s-sm align-l reveal"><img src="images/earlier/earlier-15.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-2">
+    <figure class="row-wide reveal"><img src="images/earlier/earlier-16.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="row-narrow reveal"><img src="images/earlier/earlier-17.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+
+  <figure class="plate s-lg align-c rot-p reveal"><img src="images/earlier/earlier-18.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-2">
+    <figure class="row-narrow reveal"><img src="images/earlier/earlier-19.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="row-wide reveal"><img src="images/earlier/earlier-20.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+</main>
+
+<!-- Marks the true bottom of the page — no extra scroll distance added.
+     earlier-work.js watches scroll position against this and, the
+     moment you've cleared the last portrait and hit the actual end of
+     the page, plays the wash below and carries you on to
+     seascapes.html. -->
+<div id="wave-trigger"></div>
+
+<!-- The transition itself: an actual animated tide (not a photo) rising
+     to cover the screen — a color wash, drifting light, and ripple
+     distortion on its surface (see the hidden filter defs up top), all
+     genuinely in motion rather than one static frame. -->
+<div class="wave-overlay" id="wave-overlay" aria-hidden="true">
+  <div class="wave-tide">
+    <div class="wave-shimmer wave-shimmer-1"></div>
+    <div class="wave-shimmer wave-shimmer-2"></div>
+    <div class="wave-grain"></div>
+  </div>
+</div>
+
+<script src="earlier-work.js"></script>
+</body>
+</html>

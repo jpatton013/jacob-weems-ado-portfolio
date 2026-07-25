@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Weems-Ado — Details</title>
+<meta name="description" content="Jacob Weems-Ado. Detail fragments.">
+<link rel="stylesheet" href="explosion.css">
+</head>
+<body>
+
+<a class="back-link" href="index.html">&larr; back</a>
+
+<div class="explosion-backdrop" id="explosion-backdrop"></div>
+
+<!-- Tiles are generated entirely by explosion.js from the FLOAT_COUNT
+     below, so adding another batch of images later is just: drop the
+     files in images/floats/ as float-021.jpg, float-022.jpg, etc, and
+     bump this number. Nothing else on this page needs to change. -->
+<div class="float-field" id="float-field"></div>
+
+<!-- After the chaos: scroll through this and the pile of images pulls
+     together toward the center — still a jumble, but you can see all of
+     it at once. Settle here long enough and a button appears through to
+     a calmer, earlier body of work. Same manual scroll-pin technique as
+     the zoom-out on the main page (not position:sticky), just driving a
+     "gather" instead of a "zoom." -->
+<section class="gather-spacer" id="gather-spacer">
+  <div class="gather-viewport" id="gather-viewport">
+    <div class="gather-cluster" id="gather-cluster"></div>
+    <a href="earlier-work.html" class="gather-button" id="gather-button">what a mess — let's relax →</a>
+  </div>
+</section>
+
+<script src="explosion.js"></script>
+</body>
+</html>

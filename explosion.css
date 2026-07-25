@@ -1,0 +1,220 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+.back-link {
+  position: fixed;
+  top: 3vh;
+  left: 4vw;
+  z-index: 200;
+  color: #111;
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid #111;
+  padding: 0.7em 1.2em;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.back-link:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* The field's height is set inline by explosion.js, based on how many
+   tiles there are — it's just a tall canvas that the tiles are
+   absolutely positioned within. */
+.float-field {
+  position: relative;
+  width: 100%;
+}
+
+/* Dimmed scrim behind a focused/expanded tile. Toggled visible by
+   explosion.js; sits above every scattered tile but below the expanded
+   one itself. */
+.explosion-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.82);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  z-index: 90;
+}
+
+.explosion-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Three nested layers per tile, each owning a different kind of motion so
+   they never fight over the same CSS transform:
+     .tile        — base scattered position (left/top) AND the click-to-
+                    expand FLIP transform (see explosion.js)
+     .tile-spring — JS-driven transform: reacts to scroll + pointer
+     .tile-float  — CSS-driven transform: a slow ambient idle wobble
+   the <img> itself just carries sizing. */
+.tile {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  cursor: pointer;
+}
+
+.tile-spring {
+  will-change: transform;
+}
+
+.tile-float {
+  animation-name: idle-wobble;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  will-change: transform;
+}
+
+@keyframes idle-wobble {
+  from { transform: translate(0, 0) rotate(var(--wobble-from, -2deg)); }
+  to   { transform: translate(0, -10px) rotate(var(--wobble-to, 2deg)); }
+}
+
+.tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  user-select: none;
+  border-radius: 2px;
+}
+
+/* Click-to-expand: takes over the screen, centered, above the backdrop.
+   explosion.js handles the FLIP animation between this state and the
+   tile's normal scattered position. explosion.js sets the actual width/
+   height inline, per image, matching that image's own aspect ratio
+   (inline styles win over these, which is intentional) — the values here
+   are just a fallback. Both width AND height need to be non-auto for
+   inset:0 + margin:auto to reliably center the box. */
+.tile.expanded {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(82vw, 82vh);
+  height: min(82vw, 82vh);
+  z-index: 100;
+}
+
+/* A percentage height only resolves against an ancestor with its own
+   explicit (non-auto) height, so this has to be spelled out down the
+   whole chain from .tile.expanded's fixed height to the <img>, not just
+   set on the img itself. */
+.tile.expanded .tile-spring,
+.tile.expanded .tile-float {
+  height: 100%;
+}
+
+.tile.expanded img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-float {
+    animation: none;
+  }
+}
+
+/* ---------- gather scene (the come-down after the chaos) ---------- */
+
+.gather-spacer {
+  position: relative;
+  height: 280vh;
+}
+
+/* Same deliberately-not-sticky manual pin as the zoom-out on the main
+   page — explosion.js toggles position/top inline based on scroll math,
+   these are just the base visual properties. A soft, warm color here on
+   purpose: it's the visual exhale after the dense dark field above. */
+.gather-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #f3efe8;
+}
+
+.gather-cluster {
+  position: absolute;
+  inset: 0;
+}
+
+.gather-tile {
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+.gather-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  border-radius: 2px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.gather-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font: inherit;
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+  color: #3a352c;
+  background: #f3efe8;
+  border: 1px solid #3a352c;
+  padding: 1em 1.8em;
+  text-decoration: none;
+  /* The gather tiles carry their own z-index up to ~280 (so the pile
+     stacks convincingly), and .gather-viewport doesn't establish its own
+     stacking context, so those z-indexes were competing directly against
+     this element's — at only z-index:5, the button was losing and sitting
+     invisibly under the pile of images right at center. */
+  z-index: 500;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.gather-button.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.gather-button:hover {
+  background: #3a352c;
+  color: #f3efe8;
+}

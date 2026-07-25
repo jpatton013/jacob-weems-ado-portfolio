@@ -1,0 +1,831 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  background: #fff;
+  color: #111;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- back link (used on the secondary pages) ---------- */
+
+.back-link {
+  position: fixed;
+  top: 3vh;
+  left: 4vw;
+  z-index: 50;
+  color: #111;
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid #111;
+  padding: 0.7em 1.2em;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.back-link:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* ---------- hero (name, back at the top) ---------- */
+
+.hero {
+  min-height: 32vh;
+  min-height: 32dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6vh 5vw;
+}
+
+.hero h1 {
+  font-size: clamp(1.8rem, 6.5vw, 5.5rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ---------- full-screen opener (the landing page) ---------- */
+
+.opener {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #fff;
+}
+
+.opener img {
+  width: 100%;
+  height: 100%;
+  /* "contain" shows the entire painting, uncropped, letterboxed on
+     whichever axis doesn't match the screen. */
+  object-fit: contain;
+  display: block;
+}
+
+/* Used only on earlier-work.html's opener — the opposite of the rule
+   above on purpose: fills the entire viewport with no letterboxing,
+   cropping instead of containing. */
+.opener-fill {
+  background: none;
+}
+
+.opener-fill img {
+  object-fit: cover;
+}
+
+/* Two full-resolution halves side by side, meant to read as one diptych
+   with just a hairline reveal between them — like the gap between two
+   canvases hung side by side, not a full margin. object-fit:contain
+   letterboxes each half inside its own box, and by default that letterbox
+   is centered, which pushed the two paintings apart well beyond this gap
+   value (whitespace on both the outer AND the touching inner edge of each
+   half). object-position shifts each image's letterbox to its outer edge
+   only, so this gap is the ONLY space between the two paintings, regardless
+   of how their aspect ratios compare to the viewport. cm is an absolute
+   CSS unit (~1cm on a standard 96dpi screen), so this stays a fixed
+   physical-feeling gap rather than scaling with viewport width. */
+.opener-split {
+  display: flex;
+  gap: 0;
+  background: #fff;
+}
+
+.opener-split img {
+  flex: 1 1 0;
+  width: auto;
+  height: 100%;
+  object-fit: contain;
+}
+
+.opener-split img:first-child {
+  object-position: right center;
+}
+
+.opener-split img:last-child {
+  object-position: left center;
+}
+
+/* These two aren't img.swap (they're coordinated by the dedicated script
+   below, not the generic per-image cycle), so they need their own
+   click affordance styling. */
+#diptych-left,
+#diptych-right {
+  cursor: pointer;
+}
+
+#diptych-left:hover,
+#diptych-right:hover {
+  opacity: 0.9;
+}
+
+/* Fourth step: one video spans the whole diptych in place of both halves. */
+#diptych-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+  display: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Bottom-right, not centered — centering it landed it right on the seam
+   between the two halves of the split opener on wide/desktop screens. */
+.scroll-hint {
+  position: absolute;
+  bottom: 6vh;
+  right: 6vw;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #111;
+  background: #fff;
+  border: 1px solid #111;
+  padding: 0.6em 1.1em;
+  z-index: 2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ---------- gallery ---------- */
+
+.gallery {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 10vh 4vw 4vh;
+}
+
+.plate {
+  position: relative;
+}
+
+/* Size / alignment / rotation building blocks — combined per plate in the
+   HTML so each placement can be tuned individually against the sequence
+   you specified, rather than cycling through a fixed pattern. Sized to
+   take up as much of the screen as the composition allows. */
+
+.s-xl  { width: min(1550px, 100%); margin: 20vh auto; }
+.s-lg  { width: min(1200px, 92%);  margin: 16vh auto; }
+.s-lg2 { width: min(1000px, 84%);  margin: 18vh auto; }
+.s-md  { width: min(800px, 70%);   margin: 12vh auto; }
+.s-sm  { width: min(560px, 52%);   margin: 10vh auto; }
+
+/* Full-viewport breakout — for the handful of pieces that should stop the
+   scroll cold and fill the whole screen, same treatment as the opener.
+   Breaks out of .gallery's max-width/padding via negative viewport margin. */
+.plate.full {
+  width: 100vw;
+  margin: 14vh calc(50% - 50vw);
+  height: 100vh;
+  height: 100dvh;
+  background: #fff;
+}
+
+.plate.full img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.align-l { margin-left: 0; margin-right: auto; }
+.align-r { margin-left: auto; margin-right: 0; }
+.align-c { margin-left: auto; margin-right: auto; }
+
+.rot-p { transform: rotate(0.6deg); }
+.rot-n { transform: rotate(-0.6deg); }
+
+.plate:first-of-type {
+  margin-top: 0;
+}
+
+/* Paintings with a draft alternate to click through to. */
+img.swap {
+  cursor: pointer;
+}
+
+img.swap:hover {
+  opacity: 0.9;
+}
+
+.plate img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.plate video.swap-video {
+  width: 100%;
+  height: auto;
+  display: none;
+  cursor: pointer;
+}
+
+/* Two- and three-across clusters, used sparingly for a break in rhythm. */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2.5vw;
+  max-width: 1600px;
+  margin: 16vh auto;
+}
+
+.row figure {
+  flex: 1 1 320px;
+  min-width: 220px;
+}
+
+.row img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.row video.swap-video {
+  width: 100%;
+  height: auto;
+  display: none;
+  cursor: pointer;
+}
+
+.row-2 .row-narrow { flex: 0.8 1 300px; }
+.row-2 .row-wide   { flex: 1.2 1 380px; }
+
+/* Five original panels, full-bleed and as tall as the screen reasonably
+   allows, in a single row — breaks out of .gallery's max-width. Same
+   tiled-with-gaps treatment as the 3x3 grid, rather than touching edges. */
+.panel-row {
+  display: flex;
+  gap: 0.5vw;
+  width: 100vw;
+  margin: 18vh calc(50% - 50vw);
+  height: 92vh;
+  height: 92dvh;
+}
+
+.panel-row figure {
+  flex: 1 1 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panel-row img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Fourth click-through state: a looping video in place of the image.
+   Hidden by default; script.js toggles display between the img and this
+   when cycling through states. */
+.panel-row video.swap-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  cursor: pointer;
+}
+
+/* Nine detail crops, 3x3. */
+.grid-9 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5vw;
+  max-width: 1600px;
+  margin: 18vh auto;
+}
+
+.grid-9 figure {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+
+.grid-9 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 700px) {
+  .panel-row {
+    flex-direction: column;
+    height: auto;
+  }
+  .panel-row figure {
+    height: 60vh;
+  }
+  .grid-9 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- bio (nested mid-scroll, inside the gallery flow) ---------- */
+
+.bio {
+  max-width: 600px;
+  margin: 22vh auto;
+  padding: 0 4vw;
+  text-align: center;
+}
+
+.bio p {
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  line-height: 1.7;
+  color: #333;
+  font-weight: 300;
+}
+
+/* ---------- zoom-out gallery ---------- */
+
+.zoom-spacer {
+  position: relative;
+  height: 450vh;
+}
+
+/* Deliberately not position:sticky — pinning is done manually in script.js
+   by toggling fixed/absolute + top, which sidesteps sticky-positioning
+   inconsistencies across browsers. The JS sets position/top inline;
+   these are just the base visual properties. */
+.zoom-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.zoom-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 3px;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.zoom-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Once the zoom finishes and the grid sits static (see gridSettled in
+   script.js), it becomes a link through to the floating detail-fragments
+   page — this just gives it the visual affordance for that. */
+.zoom-grid.clickable {
+  cursor: pointer;
+}
+
+.zoom-grid.clickable img {
+  transition: opacity 0.2s ease;
+}
+
+.zoom-grid.clickable:hover img {
+  opacity: 0.85;
+}
+
+.zoom-label {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: #111;
+  background: #fff;
+  border: 1px solid #111;
+  padding: 0.8em 1.4em;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.zoom-label.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.zoom-label:hover {
+  background: #111;
+  color: #fff;
+}
+
+/* A second, more playful call-out next to the "back to top" button — the
+   grid being clickable through to the floating detail page wasn't
+   obvious enough on its own, so this makes the "there's more" explicit.
+   Opposite corner from .zoom-label so the two don't compete, and it pops
+   in with a little bounce instead of just fading, to actually catch the
+   eye rather than blend into the rest of the settled grid. */
+.explore-nudge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font: inherit;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  background: #111;
+  border: 1px solid #111;
+  padding: 1.1em 2em;
+  text-decoration: none;
+  opacity: 0;
+  /* Centering (-50%, -50%) has to be baked into every transform value
+     below, not applied separately — this element only gets ONE transform
+     property, shared between centering, the pop-in, and the idle bounce. */
+  transform: translate(-50%, calc(-50% - 10px)) scale(0.9);
+  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.explore-nudge.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+  animation: nudge-bounce 2.4s ease-in-out 0.6s infinite;
+}
+
+.explore-nudge:hover {
+  background: #fff;
+  color: #111;
+  animation-play-state: paused;
+}
+
+@keyframes nudge-bounce {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(-50%, calc(-50% - 8px)); }
+}
+
+@media (max-width: 700px) {
+  .explore-nudge {
+    font-size: 0.9rem;
+    padding: 0.9em 1.5em;
+  }
+}
+
+/* ---------- footer ---------- */
+
+.contact {
+  text-align: center;
+  padding: 14vh 5vw 10vh;
+}
+
+.contact-name {
+  font-size: clamp(1.6rem, 6.2vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: #111;
+  margin-bottom: 5vh;
+  white-space: nowrap;
+}
+
+.contact-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5em;
+  flex-wrap: wrap;
+}
+
+.contact a {
+  color: #111;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid #111;
+  padding-bottom: 2px;
+}
+
+.contact a:hover {
+  opacity: 0.6;
+}
+
+.contact-button {
+  border: 1px solid #111;
+  padding: 0.7em 1.3em;
+  border-bottom: 1px solid #111 !important;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.contact-button:hover {
+  background: #111;
+  color: #fff;
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .s-xl, .s-lg, .s-lg2, .s-md, .s-sm {
+    width: 100%;
+    margin: 9vh auto;
+    transform: none;
+  }
+  .row {
+    flex-direction: column;
+    gap: 6vh;
+    margin: 9vh auto;
+  }
+}
+
+/* ---------- earlier-work.html only: water background, sound toggle,
+   scroll-reveal ---------- */
+
+/* Fixed behind all page content, three soft radial-gradient "caustic"
+   fields drifting past each other at different speeds/directions —
+   cheap (no canvas, no JS per-frame cost), and it reads as light moving
+   through water without fighting for attention against the paintings. */
+.water-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(180deg, #eef5f8 0%, #dcebf1 100%);
+}
+
+.water-layer {
+  position: absolute;
+  inset: -20%;
+  background-repeat: no-repeat;
+  opacity: 0.55;
+  filter: blur(2px);
+}
+
+.water-layer-1 {
+  background-image:
+    radial-gradient(ellipse 40% 24% at 20% 30%, rgba(84, 150, 186, 0.35), transparent 60%),
+    radial-gradient(ellipse 35% 20% at 75% 60%, rgba(60, 120, 160, 0.3), transparent 60%),
+    radial-gradient(ellipse 30% 18% at 50% 85%, rgba(120, 180, 200, 0.28), transparent 60%);
+  animation: water-drift-1 26s ease-in-out infinite;
+}
+
+.water-layer-2 {
+  background-image:
+    radial-gradient(ellipse 32% 20% at 65% 20%, rgba(255, 255, 255, 0.4), transparent 60%),
+    radial-gradient(ellipse 28% 16% at 15% 65%, rgba(255, 255, 255, 0.3), transparent 60%),
+    radial-gradient(ellipse 26% 15% at 85% 90%, rgba(200, 230, 240, 0.3), transparent 60%);
+  animation: water-drift-2 34s ease-in-out infinite;
+}
+
+.water-layer-3 {
+  background-image:
+    radial-gradient(ellipse 45% 26% at 40% 50%, rgba(30, 80, 120, 0.18), transparent 65%),
+    radial-gradient(ellipse 30% 18% at 90% 15%, rgba(30, 80, 120, 0.15), transparent 60%);
+  animation: water-drift-3 42s ease-in-out infinite;
+}
+
+@keyframes water-drift-1 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(3%, 4%) rotate(2deg); }
+}
+
+@keyframes water-drift-2 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-4%, 3%) rotate(-1.5deg); }
+}
+
+@keyframes water-drift-3 {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(2%, -3%) rotate(1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .water-layer { animation: none; }
+}
+
+/* Small opt-in toggle for the procedural ambient water sound — browsers
+   block autoplay-with-sound regardless of whether a real audio file
+   exists, so this button is the correct UX either way, not a workaround. */
+.sound-toggle {
+  position: fixed;
+  bottom: 3.5vh;
+  right: 4vw;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #111;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid #111;
+  padding: 0.7em 1.2em;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sound-toggle:hover {
+  background: #111;
+  color: #fff;
+}
+
+.sound-icon {
+  font-size: 0.95em;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+.sound-toggle[aria-pressed="true"] .sound-icon {
+  opacity: 1;
+  animation: sound-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sound-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Scroll-reveal: fades/rises each plate and row into place as it enters
+   the viewport. Starts invisible in case JS fails to load, CSS alone
+   still leaves the gallery fully visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- earlier-work.html only: the wave-wash transition into
+   seascapes.html ---------- */
+
+/* Fixed over everything. earlier-work.js adds .active once #wave-trigger
+   scrolls into view at the true bottom of the page (no extra scroll
+   distance added for this) — the tide itself is what animates (via its
+   own clip-path transition below), so this wrapper needs nothing more
+   than to sit on top of the page and stay out of the way of clicks. */
+.wave-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* A real rising tide, not a photo: clip-path reveals it from the bottom
+   edge upward, like water actually flooding up the screen, rather than
+   a panel sliding or a picture fading in. Slightly oversized (-2% each
+   side) so the blurred shimmer layers inside never show a seam at the
+   edge. Eased as a fast surge that settles (rather than the previous
+   symmetric ease, which read a bit mechanical) for more of a "rushes
+   over you" feel, and softened colors (no near-black stop) so it reads
+   as water, not a solid wall.
+
+   filter: url(#ripple-distort) (defined inline in earlier-work.html) is
+   what turns the clip-path's otherwise razor-straight edge into an
+   undulating, organic waterline — it warps this whole element, edge
+   included, through continuously-animated turbulence, rather than
+   revealing along one flat geometric line. */
+.wave-tide {
+  position: absolute;
+  inset: -2%;
+  background: linear-gradient(180deg, #2e88ac 0%, #145875 50%, #0d3f5c 100%);
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: url(#ripple-distort);
+}
+
+.wave-overlay.active .wave-tide {
+  clip-path: inset(0% 0 0 0);
+}
+
+/* A second turbulence filter, rendered as translucent white noise and
+   blended over the tide — reads as drifting foam/grain animating across
+   the water's surface the whole time it's visible, rather than one flat
+   color fill sitting still. */
+.wave-grain {
+  position: absolute;
+  inset: 0;
+  filter: url(#ripple-grain);
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Two soft, blurred light patches drifting independently across the
+   tide's surface — genuine continuous motion (not a single freeze
+   frame), reading as light glinting on moving water. Clipped along with
+   the tide itself since they're children of .wave-tide, so they only
+   ever appear within the risen water, never floating above it. */
+.wave-shimmer {
+  position: absolute;
+  inset: -15%;
+  background-repeat: no-repeat;
+  filter: blur(20px);
+  mix-blend-mode: screen;
+}
+
+.wave-shimmer-1 {
+  background-image:
+    radial-gradient(ellipse 30% 16% at 25% 40%, rgba(180, 225, 235, 0.5), transparent 60%),
+    radial-gradient(ellipse 26% 14% at 72% 65%, rgba(180, 225, 235, 0.4), transparent 60%);
+  animation: wave-shimmer-drift-1 5s ease-in-out infinite;
+}
+
+.wave-shimmer-2 {
+  background-image:
+    radial-gradient(ellipse 34% 18% at 60% 28%, rgba(220, 240, 245, 0.35), transparent 60%),
+    radial-gradient(ellipse 22% 12% at 18% 78%, rgba(220, 240, 245, 0.3), transparent 60%);
+  animation: wave-shimmer-drift-2 7s ease-in-out infinite;
+}
+
+@keyframes wave-shimmer-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4%, -3%); }
+}
+
+@keyframes wave-shimmer-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5%, 3%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-tide {
+    transition-duration: 0.4s;
+    filter: none;
+  }
+  .wave-shimmer {
+    animation: none;
+  }
+  .wave-grain {
+    display: none;
+  }
+}
+
+/* ---------- earlier-work.html only: arrival tide from explosion.html's
+   "let's relax" button ---------- */
+
+/* The same tide component as the exit transition (color + drifting
+   shimmer, reused via the shared .wave-tide/.wave-shimmer classes), but
+   inverted: it starts already fully covering the screen and drains away
+   downward as .dismissed is added, uncovering the page from the top
+   down — the water that carried you here rushing past and off, rather
+   than the previous circular wipe from the center. earlier-work.js adds
+   .dismissed a beat after load (after letting the browser paint the
+   fully-covered starting frame first). */
+.page-enter {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.page-enter .wave-tide {
+  clip-path: inset(0% 0 0 0);
+  transition: clip-path 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-enter.dismissed .wave-tide {
+  clip-path: inset(100% 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter .wave-tide {
+    transition-duration: 0.3s;
+  }
+}

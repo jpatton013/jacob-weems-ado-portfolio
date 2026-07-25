@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Weems-Ado — Paintings</title>
+<meta name="description" content="Jacob Weems-Ado. Paintings.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero">
+  <h1>JACOB WEEMS-ADO</h1>
+</header>
+
+<!-- Nine detail crops, 3x3, moved up to the top. -->
+<div class="grid-9">
+  <figure><img class="swap" src="images/detail-01.jpg" data-alt="images/detail-01-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-02.jpg" data-alt="images/detail-02-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-03.jpg" data-alt="images/detail-03-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-04.jpg" data-alt="images/detail-04-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-05.jpg" data-alt="images/detail-05-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-06.jpg" data-alt="images/detail-06-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-07.jpg" data-alt="images/detail-07-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-08.jpg" data-alt="images/detail-08-alt.jpg" alt="Detail" loading="lazy"></figure>
+  <figure><img class="swap" src="images/detail-09.jpg" data-alt="images/detail-09-alt.jpg" alt="Detail" loading="lazy"></figure>
+</div>
+
+<!-- Landing on the work next — the two full-resolution halves of the
+     diptych, side by side, instead of one cropped composite. -->
+<!-- The diptych is coordinated, not two independent swap images: clicking
+     either half advances ONE shared step for both (finished -> both drafts
+     -> both sketches -> a single shared video spanning the whole figure).
+     Clicking the video jumps straight back to the finished/landing state,
+     not the next step. See the dedicated block in script.js. -->
+<figure class="opener opener-split" id="diptych">
+  <img id="diptych-left" src="images/painting-10-left.jpg" data-alt="images/painting-10-left-alt.jpg" data-alt2="images/painting-10-right-alt2.jpg" alt="Painting">
+  <img id="diptych-right" src="images/painting-10-right.jpg" data-alt="images/painting-10-right-alt.jpg" data-alt2="images/painting-10-left-alt2.jpg" alt="Painting">
+  <video id="diptych-video" src="videos/painting-10.mp4" loop playsinline preload="none"></video>
+  <div class="scroll-hint">scroll</div>
+</figure>
+
+<main class="gallery">
+  <figure class="plate full"><img class="swap" src="images/painting-11.jpg" data-alt="images/painting-11-alt.jpg" alt="Painting" loading="lazy"></figure>
+
+  <!-- Painting 12, as its five original panels, full resolution, in order.
+       Each panel is also click-to-swap with its draft alternate. -->
+  <div class="panel-row">
+    <!-- Each panel cycles finished -> draft -> sketch -> video -> back to
+         finished on click. The video sits as a hidden sibling of the img;
+         script.js finds it by class and toggles which one is visible. -->
+    <figure>
+      <img class="swap" src="images/panel-01.jpg" data-alt="images/panel-01-alt.jpg" data-alt2="images/panel-01-alt2.jpg" alt="Painting, panel 1 of 5" loading="lazy">
+      <video class="swap-video" src="videos/panel-01.mp4" loop playsinline preload="none"></video>
+    </figure>
+    <figure>
+      <img class="swap" src="images/panel-02.jpg" data-alt="images/panel-02-alt.jpg" data-alt2="images/panel-02-alt2.jpg" alt="Painting, panel 2 of 5" loading="lazy">
+      <video class="swap-video" src="videos/panel-02.mp4" loop playsinline preload="none"></video>
+    </figure>
+    <figure>
+      <img class="swap" src="images/panel-03.jpg" data-alt="images/panel-03-alt.jpg" data-alt2="images/panel-03-alt2.jpg" alt="Painting, panel 3 of 5" loading="lazy">
+      <video class="swap-video" src="videos/panel-03.mp4" loop playsinline preload="none"></video>
+    </figure>
+    <figure>
+      <img class="swap" src="images/panel-04.jpg" data-alt="images/panel-04-alt.jpg" data-alt2="images/panel-04-alt2.jpg" alt="Painting, panel 4 of 5" loading="lazy">
+      <video class="swap-video" src="videos/panel-04.mp4" loop playsinline preload="none"></video>
+    </figure>
+    <figure>
+      <img class="swap" src="images/panel-05.jpg" data-alt="images/panel-05-alt.jpg" data-alt2="images/panel-05-alt2.jpg" alt="Painting, panel 5 of 5" loading="lazy">
+      <video class="swap-video" src="videos/panel-05.mp4" loop playsinline preload="none"></video>
+    </figure>
+  </div>
+
+  <figure class="plate s-lg align-r rot-p">
+    <img class="swap" src="images/painting-06.jpg" data-alt="images/painting-06-alt.jpg" data-alt2="images/painting-06-alt2.jpg" alt="Painting" loading="lazy">
+    <video class="swap-video" src="videos/painting-06.mp4" loop playsinline preload="none"></video>
+  </figure>
+  <figure class="plate s-sm align-r rot-n"><img class="swap" src="images/painting-03.jpg" data-alt="images/painting-03-alt.jpg" alt="Painting" loading="lazy"></figure>
+  <figure class="plate s-lg2 align-c"><img class="swap" src="images/painting-02.jpg" data-alt="images/painting-02-alt.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-3">
+    <figure><img class="swap" src="images/painting-01.jpg" data-alt="images/painting-01-alt.jpg" alt="Painting" loading="lazy"></figure>
+    <figure><img class="swap" src="images/painting-09.jpg" data-alt="images/painting-09-alt.jpg" alt="Painting" loading="lazy"></figure>
+    <figure><img class="swap" src="images/painting-15.jpg" data-alt="images/painting-15-alt.jpg" alt="Painting" loading="lazy"></figure>
+  </div>
+
+  <section class="bio">
+    <p>We experience the material world as a flood of images with no hierarchy of importance as they enter consciousness. My work treats that flood as object, reference, and script. This is an honest reflection of attention. Evidence from inside.</p>
+  </section>
+
+  <figure class="plate s-md align-c rot-n"><img class="swap" src="images/painting-16.jpg" data-alt="images/painting-16-alt.jpg" alt="Painting" loading="lazy"></figure>
+  <figure class="plate full"><img class="swap" src="images/painting-14.jpg" data-alt="images/painting-14-alt.jpg" alt="Painting" loading="lazy"></figure>
+
+  <div class="row row-2">
+    <figure class="row-narrow"><img class="swap" src="images/painting-08.jpg" data-alt="images/painting-08-alt.jpg" alt="Painting" loading="lazy"></figure>
+    <figure class="row-wide">
+      <img class="swap" src="images/painting-07.jpg" data-alt="images/painting-07-alt.jpg" data-alt2="images/painting-07-alt2.jpg" alt="Painting" loading="lazy">
+      <video class="swap-video" src="videos/painting-07.mp4" loop playsinline preload="none"></video>
+      <video class="swap-video" src="videos/painting-07-2.mp4" loop playsinline preload="none"></video>
+    </figure>
+  </div>
+
+  <figure class="plate s-md align-c"><img class="swap" src="images/painting-05.jpg" data-alt="images/painting-05-alt.jpg" alt="Painting" loading="lazy"></figure>
+  <figure class="plate full"><img class="swap" src="images/painting-04.jpg" data-alt="images/painting-04-alt.jpg" data-alt2="images/painting-04-alt2.jpg" alt="Painting" loading="lazy"></figure>
+
+  <!-- Painting 13 wasn't included in the order you gave me — placed here
+       provisionally so nothing is dropped from the site. Tell me where it
+       should actually go and I'll move it. -->
+  <figure class="plate s-md align-c"><img class="swap" src="images/painting-13.jpg" data-alt="images/painting-13-alt.jpg" alt="Painting" loading="lazy"></figure>
+</main>
+
+<section class="zoom-spacer">
+  <div class="zoom-viewport">
+    <div class="zoom-grid">
+      <img src="images/painting-10.jpg" alt="Painting">
+      <img src="images/painting-11.jpg" alt="Painting">
+      <img src="images/painting-12.jpg" alt="Painting">
+      <img src="images/painting-06.jpg" alt="Painting">
+      <img src="images/painting-03.jpg" alt="Painting">
+      <img src="images/painting-02.jpg" alt="Painting">
+      <img src="images/painting-01.jpg" alt="Painting">
+      <img src="images/painting-09.jpg" alt="Painting">
+      <img src="images/painting-15.jpg" alt="Painting">
+      <img src="images/painting-16.jpg" alt="Painting">
+      <img src="images/painting-14.jpg" alt="Painting">
+      <img src="images/painting-08.jpg" alt="Painting">
+      <img src="images/painting-07.jpg" alt="Painting">
+      <img src="images/painting-05.jpg" alt="Painting">
+      <img src="images/painting-04.jpg" alt="Painting">
+      <img src="images/painting-13.jpg" alt="Painting">
+    </div>
+    <button type="button" class="zoom-label">ALL WORKS — BACK TO TOP</button>
+    <a href="explosion.html" class="explore-nudge">psst — there's more →</a>
+  </div>
+</section>
+
+<footer class="contact">
+  <h2 class="contact-name">JACOB WEEMS-ADO</h2>
+  <div class="contact-links">
+    <a href="https://instagram.com/jacobpattonado" target="_blank" rel="noopener">@jacobpattonado</a>
+    <a href="mailto:jacobpattonado@gmail.com?subject=Commission%20%2F%20Press%20Inquiry" class="contact-button">Contact</a>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
