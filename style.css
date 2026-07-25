@@ -143,6 +143,26 @@ html, body {
   z-index: 2;
 }
 
+/* On narrow/portrait screens, side-by-side halves at height:100% each
+   turn into two tall, cramped slivers. Stacked instead, each half gets
+   the full screen width and roughly half the height, same as it would
+   read as two canvases hung one above the other rather than side by
+   side. */
+@media (max-width: 700px) {
+  .opener-split {
+    flex-direction: column;
+  }
+  .opener-split img {
+    width: 100%;
+    height: auto;
+    flex: 1 1 0;
+  }
+  .opener-split img:first-child,
+  .opener-split img:last-child {
+    object-position: center center;
+  }
+}
+
 /* Bottom-right, not centered — centering it landed it right on the seam
    between the two halves of the split opener on wide/desktop screens. */
 .scroll-hint {
@@ -545,6 +565,14 @@ img.swap:hover {
   opacity: 1;
 }
 
+/* Same contact block, repeated at the top of the page right under the
+   hero name — no h2 name repeated here (the hero h1 already covers
+   that), just the links, and much less vertical padding since it isn't
+   closing out the page the way the footer is. */
+.contact-top {
+  padding: 0 5vw 6vh;
+}
+
 @media (max-width: 700px) {
   .s-xl, .s-lg, .s-lg2, .s-md, .s-sm {
     width: 100%;
@@ -555,6 +583,61 @@ img.swap:hover {
     flex-direction: column;
     gap: 6vh;
     margin: 9vh auto;
+  }
+
+  /* The desktop vh-based margins throughout (14–22vh a piece) were tuned
+     against wide, short viewports — stacked on a tall, narrow phone
+     screen they compound into an excessive amount of blank scrolling
+     between pieces. Scaled down here so the gallery still breathes but
+     doesn't feel broken/empty. */
+  .hero {
+    min-height: 22vh;
+    min-height: 22dvh;
+    padding: 5vh 6vw;
+  }
+
+  .hero h1 {
+    white-space: normal;
+  }
+
+  .contact-top {
+    padding: 0 6vw 4vh;
+  }
+
+  .grid-9 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1vw;
+    margin: 8vh auto;
+  }
+
+  .panel-row {
+    margin: 8vh 0;
+  }
+
+  .plate.full {
+    margin: 8vh calc(50% - 50vw);
+  }
+
+  .bio {
+    margin: 10vh auto;
+  }
+
+  .contact {
+    padding: 8vh 6vw 8vh;
+  }
+
+  .contact-name {
+    white-space: normal;
+  }
+
+  .contact-links {
+    gap: 1.5em;
+  }
+
+  .zoom-label {
+    font-size: 0.65rem;
+    padding: 0.7em 1.1em;
+    bottom: 3vh;
   }
 }
 
