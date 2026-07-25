@@ -608,7 +608,7 @@ img.swap:hover {
   }
 
   .panel-row {
-    margin: 8vh 0;
+    margin: 8vh calc(50% - 50vw);
   }
 
   .plate.full {
