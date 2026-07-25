@@ -155,6 +155,7 @@ html, body {
   .opener-split img {
     width: 100%;
     height: auto;
+    min-height: 0;
     flex: 1 1 0;
   }
   .opener-split img:first-child,
@@ -355,9 +356,6 @@ img.swap:hover {
   }
   .panel-row figure {
     height: 60vh;
-  }
-  .grid-9 {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -605,7 +603,6 @@ img.swap:hover {
   }
 
   .grid-9 {
-    grid-template-columns: repeat(2, 1fr);
     gap: 1vw;
     margin: 8vh auto;
   }
