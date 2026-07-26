@@ -15,10 +15,14 @@ html, body {
    except the landing page itself, which already has the full contact
    block at top and bottom) ---------- */
 
+/* This stylesheet's two pages (earlier-work.html, seascapes.html) both
+   have the "waves" sound toggle sitting bottom-right — so unlike the
+   other secondary pages, this one lives bottom-left instead to stay
+   clear of it, on both desktop and mobile. */
 .mini-contact {
   position: fixed;
   bottom: 2.5vh;
-  right: 3vw;
+  left: 3vw;
   z-index: 50;
   display: flex;
   gap: 1.2em;
@@ -37,15 +41,40 @@ html, body {
   color: #111;
 }
 
+/* Icon glyphs only show up on mobile (see below) — on desktop the
+   text labels do the job and these stay hidden. */
+.mini-contact-icon {
+  display: none;
+}
+
+/* On phones the text-link version was sitting right at the bottom
+   edge, too small and too tightly packed to reliably tap. Icon-only
+   circles with a real touch target fix that. */
 @media (max-width: 700px) {
   .mini-contact {
-    bottom: 1.8vh;
-    right: 4vw;
-    gap: 1em;
+    bottom: 3vh;
+    left: 4vw;
+    gap: 0.7em;
   }
 
   .mini-contact a {
-    font-size: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(17, 17, 17, 0.06);
+  }
+
+  .mini-contact-label {
+    display: none;
+  }
+
+  .mini-contact-icon {
+    display: block;
+    font-size: 1rem;
+    line-height: 1;
   }
 }
 
