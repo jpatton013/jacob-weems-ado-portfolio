@@ -205,9 +205,13 @@ html, body {
 }
 
 /* Same deliberately-not-sticky manual pin as the zoom-out on the main
-   page — explosion.js toggles position/top inline based on scroll math,
-   these are just the base visual properties. A soft, warm color here on
-   purpose: it's the visual exhale after the dense dark field above. */
+   page — explosion.js toggles position/top inline based on scroll math.
+   No background of its own on purpose, unlike the earlier version of
+   this: the actual field tiles now do the gathering themselves (see
+   explosion.js), still living behind/around this element rather than
+   inside it, so an opaque background here would just paint over them
+   like a curtain. Leaving it transparent is what keeps the come-down
+   reading as the same continuous field instead of a new scene. */
 .gather-viewport {
   position: absolute;
   top: 0;
@@ -215,28 +219,7 @@ html, body {
   width: 100%;
   height: 100vh;
   height: 100dvh;
-  overflow: hidden;
-  background: #f3efe8;
-}
-
-.gather-cluster {
-  position: absolute;
-  inset: 0;
-}
-
-.gather-tile {
-  position: absolute;
-  will-change: transform, opacity;
-}
-
-.gather-tile img {
-  display: block;
-  width: 100%;
-  height: auto;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  border-radius: 2px;
   pointer-events: none;
-  user-select: none;
 }
 
 .gather-button {
@@ -251,18 +234,19 @@ html, body {
   border: 1px solid #3a352c;
   padding: 1em 1.8em;
   text-decoration: none;
-  /* The gather tiles carry their own z-index up to ~280 (so the pile
-     stacks convincingly), and .gather-viewport doesn't establish its own
-     stacking context, so those z-indexes were competing directly against
-     this element's — at only z-index:5, the button was losing and sitting
-     invisibly under the pile of images right at center. */
-  z-index: 500;
+  /* The tiles that gather at page bottom now carry an explicit
+     z-index:40 (see explosion.js) so this needs to clear that — there
+     were actually two conflicting z-index declarations left in this
+     rule before (500, then a stray leftover 5 right after it that
+     silently won since it came last), which is exactly the "button
+     sits invisibly under the pile" bug the comment above used to
+     describe. Down to one declaration now. */
+  z-index: 50;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.92);
   transition: opacity 0.5s ease, transform 0.5s ease, background 0.2s ease, color 0.2s ease;
   pointer-events: none;
   cursor: pointer;
-  z-index: 5;
 }
 
 .gather-button.visible {

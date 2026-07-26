@@ -30,15 +30,18 @@
      bump this number. Nothing else on this page needs to change. -->
 <div class="float-field" id="float-field"></div>
 
-<!-- After the chaos: scroll through this and the pile of images pulls
-     together toward the center — still a jumble, but you can see all of
-     it at once. Settle here long enough and a button appears through to
-     a calmer, earlier body of work. Same manual scroll-pin technique as
-     the zoom-out on the main page (not position:sticky), just driving a
-     "gather" instead of a "zoom." -->
+<!-- After the chaos: scroll through this and a portion of the actual
+     tiles you were just scrolling past — the real elements, not a fresh
+     synthetic set — switch over from the field's normal flow to fixed
+     positioning exactly where they already are on screen, then drift
+     together into a loose pile as you keep scrolling. No new scene, no
+     background change; explosion.js handles the handoff. Settle here
+     long enough and a button appears through to a calmer, earlier body
+     of work. Same manual scroll-pin technique as the zoom-out on the
+     main page (not position:sticky), just driving a "gather" instead of
+     a "zoom." -->
 <section class="gather-spacer" id="gather-spacer">
   <div class="gather-viewport" id="gather-viewport">
-    <div class="gather-cluster" id="gather-cluster"></div>
     <a href="earlier-work.html" class="gather-button" id="gather-button">what a mess — let's relax →</a>
   </div>
 </section>

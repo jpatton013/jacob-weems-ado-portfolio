@@ -417,203 +417,203 @@
     // distractingly; the field just keeps its layout and lets the browser
     // reflow naturally. A hard refresh re-scatters cleanly if needed.
   });
-})();
 
-// ---- gather scene: the pile pulls together after the chaos --------------
-// A self-contained scene, separate from the field above (same relationship
-// as the zoom-out grid is to the gallery on the main page): its own small
-// set of tiles, pulled from whatever thumbnails are already on the page,
-// arranged scattered-wide at the start and animated into a tight, still-
-// messy cluster in the center as you scroll through .gather-spacer. Same
-// manual fixed/absolute pin as the main page's zoom-out — not
-// position:sticky — for the same cross-browser reasons.
-(function () {
-  "use strict";
+  // ---- gather scene: the actual field tiles pull together -------------
+  // Not a separate scene with its own synthetic tile set (that's what
+  // this used to be) — a portion of the SAME tile elements from the
+  // field above, chosen from whichever ones sit lowest in the field (so
+  // they're the ones the viewer was just scrolling past, not some
+  // random handful from anywhere in the whole 300+ image field), switch
+  // over from the field's normal document-flow positioning to
+  // position:fixed captured at exactly their current on-screen spot —
+  // no jump — and drift into a loose pile together as .gather-spacer
+  // scrolls by. Same real tile, same img element, the whole way through.
+  var gatherSpacer = document.getElementById("gather-spacer");
+  var gatherViewport = document.getElementById("gather-viewport");
+  var gatherButton = document.getElementById("gather-button");
 
-  var spacer = document.getElementById("gather-spacer");
-  var viewport = document.getElementById("gather-viewport");
-  var cluster = document.getElementById("gather-cluster");
-  var button = document.getElementById("gather-button");
-  if (!spacer || !viewport || !cluster) return;
+  if (gatherSpacer && gatherViewport && tiles.length) {
+    var GATHER_TILE_COUNT = Math.min(70, tiles.length);
 
-  var GATHER_TILE_COUNT = 70;
-
-  function rand(min, max) {
-    return min + Math.random() * (max - min);
-  }
-
-  // Pull from the thumbnails already built by the field above, rather
-  // than re-deriving image paths — stays in sync with however many
-  // images actually exist automatically.
-  var allSrcs = Array.prototype.map.call(
-    document.querySelectorAll(".float-field img"),
-    function (img) {
-      return img.getAttribute("src");
-    }
-  );
-
-  // Fisher-Yates, then take the first N — a random, non-repeating subset.
-  for (var s = allSrcs.length - 1; s > 0; s--) {
-    var k = Math.floor(Math.random() * (s + 1));
-    var tmp = allSrcs[s];
-    allSrcs[s] = allSrcs[k];
-    allSrcs[k] = tmp;
-  }
-  var srcs = allSrcs.slice(0, Math.min(GATHER_TILE_COUNT, allSrcs.length));
-
-  var vw = window.innerWidth;
-  var vh = window.innerHeight;
-  var centerX = vw / 2;
-  var centerY = vh / 2;
-  var clusterRadius = Math.min(vw, vh) * 0.28;
-
-  var gtiles = srcs.map(function (src) {
-    var size = rand(70, 150);
-
-    // Scattered starting point: spread across the whole viewport, echoing
-    // the chaos of the field just scrolled past.
-    var startX = rand(0, vw - size);
-    var startY = rand(0, vh - size);
-    var startRot = rand(-25, 25);
-
-    // Clustered end point: tightly grouped around center, still jittered
-    // and rotated so it reads as a pile, not a grid.
-    var angle = rand(0, Math.PI * 2);
-    var dist = rand(0, clusterRadius);
-    var endX = centerX + Math.cos(angle) * dist - size / 2;
-    var endY = centerY + Math.sin(angle) * dist - size / 2;
-    var endRot = rand(-16, 16);
-
-    // No z-index here on purpose. Giving tiles their own z-index (as an
-    // earlier version did) put them in direct numeric competition with
-    // the button's z-index within whatever stacking context .gather-
-    // viewport happens to establish (position:fixed always creates one,
-    // which isn't obvious) — the button kept losing and sitting invisibly
-    // under the pile. Plain DOM order already gives a fine layered look
-    // (later-created tiles paint over earlier ones), and leaving every
-    // tile at the default stacking level means the button's z-index is
-    // the ONLY explicit one around — nothing left to compete with it.
-    var el = document.createElement("div");
-    el.className = "gather-tile";
-    el.style.width = size + "px";
-    el.style.left = startX + "px";
-    el.style.top = startY + "px";
-    el.style.transform = "rotate(" + startRot + "deg)";
-
-    var img = document.createElement("img");
-    img.src = src;
-    img.alt = "";
-    img.loading = "lazy";
-    el.appendChild(img);
-    cluster.appendChild(el);
-
-    return {
-      el: el,
-      startX: startX,
-      startY: startY,
-      startRot: startRot,
-      endX: endX,
-      endY: endY,
-      endRot: endRot
-    };
-  });
-
-  function easeInOut(p) {
-    return p * p * (3 - 2 * p); // smoothstep
-  }
-
-  function applyProgress(p) {
-    var eased = easeInOut(p);
-    for (var i = 0; i < gtiles.length; i++) {
-      var t = gtiles[i];
-      var x = t.startX + (t.endX - t.startX) * eased;
-      var y = t.startY + (t.endY - t.startY) * eased;
-      var rot = t.startRot + (t.endRot - t.startRot) * eased;
-      t.el.style.left = x + "px";
-      t.el.style.top = y + "px";
-      t.el.style.transform = "rotate(" + rot + "deg)";
-    }
-    if (button) {
-      button.classList.toggle("visible", p > 0.97);
-    }
-  }
-
-  // ---- manual pin, identical approach to the main page's zoom-out -----
-  var viewportHeight = 0;
-  var spacerHeight = 0;
-
-  function pin(state, bottomOffset) {
-    if (state === "during") {
-      viewport.style.position = "fixed";
-      viewport.style.top = "0";
-    } else if (state === "after") {
-      viewport.style.position = "absolute";
-      viewport.style.top = bottomOffset + "px";
-    } else {
-      viewport.style.position = "absolute";
-      viewport.style.top = "0";
-    }
-  }
-
-  function measure() {
-    spacerHeight = spacer.offsetHeight;
-    viewportHeight = Math.max(
-      window.innerHeight,
-      (window.visualViewport && window.visualViewport.height) || 0
-    );
-  }
-
-  function update() {
-    var rect = spacer.getBoundingClientRect();
-    var total = spacerHeight - viewportHeight;
-
-    if (total <= 0) {
-      pin("before", 0);
-      applyProgress(1);
-      return;
-    }
-
-    if (rect.top > 0) {
-      pin("before", 0);
-      applyProgress(0);
-    } else if (rect.bottom <= viewportHeight) {
-      pin("after", spacerHeight - viewportHeight);
-      applyProgress(1);
-    } else {
-      pin("during", 0);
-      var p = -rect.top / total;
-      if (p < 0) p = 0;
-      if (p > 1) p = 1;
-      applyProgress(p);
-    }
-  }
-
-  var ticking = false;
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function () {
-      update();
-      ticking = false;
+    // Sort by vertical position in the field (descending) and pull from
+    // a pool a bit wider than what's actually needed, then shuffle that
+    // pool — biased toward the bottom of the field without it being the
+    // exact same handful of tiles in the same rows on every visit.
+    var byY = tiles.slice().sort(function (a, b) {
+      return b.y - a.y;
     });
-  }
+    var gatherPool = byY.slice(0, Math.min(GATHER_TILE_COUNT * 2, tiles.length));
+    for (var gp = gatherPool.length - 1; gp > 0; gp--) {
+      var gk = Math.floor(Math.random() * (gp + 1));
+      var gtmp = gatherPool[gp];
+      gatherPool[gp] = gatherPool[gk];
+      gatherPool[gk] = gtmp;
+    }
+    var chosen = gatherPool.slice(0, GATHER_TILE_COUNT);
 
-  function refresh() {
-    measure();
-    pin("before", 0);
-    update();
-  }
+    var gvw = window.innerWidth;
+    var gvh = window.innerHeight;
+    var gCenterX = gvw / 2;
+    var gCenterY = gvh / 2;
+    var gClusterRadius = Math.min(gvw, gvh) * 0.28;
 
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", refresh);
-  window.addEventListener("orientationchange", refresh);
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener("resize", refresh);
-  }
-  window.addEventListener("load", function () {
-    refresh();
-    setTimeout(refresh, 400);
-  });
+    // End position (where each chosen tile settles in the pile) is fixed
+    // up front — only the start position depends on scroll timing, which
+    // is captured later, right when the handoff actually happens.
+    chosen.forEach(function (t) {
+      var angle = rand(0, Math.PI * 2);
+      var dist = rand(0, gClusterRadius);
+      t.gatherEndX = gCenterX + Math.cos(angle) * dist - t.size / 2;
+      t.gatherEndY = gCenterY + Math.sin(angle) * dist - t.size / 2;
+      t.gatherEndRot = rand(-16, 16);
+    });
 
-  refresh();
+    var handoffDone = false;
+
+    // The moment scrolling first reaches the gather section: freeze each
+    // chosen tile's field physics (same freeze used for expand()) and
+    // capture exactly where it's sitting on screen right now as a fixed-
+    // position start point. This is what makes the handoff invisible —
+    // the tile doesn't move at all at the instant it switches modes.
+    function handoff() {
+      if (handoffDone) return;
+      handoffDone = true;
+      chosen.forEach(function (t) {
+        var rect = t.el.getBoundingClientRect();
+        t.frozen = true;
+        t.spring.style.transform = "";
+        t.floatEl.style.animationName = "none";
+        t.floatEl.style.transform = "none";
+        t.el.style.position = "fixed";
+        t.el.style.left = rect.left + "px";
+        t.el.style.top = rect.top + "px";
+        t.el.style.zIndex = "40";
+        t.gatherStartX = rect.left;
+        t.gatherStartY = rect.top;
+        t.gatherStartRot = rand(-8, 8);
+      });
+    }
+
+    // Scrolling back up above the gather section undoes the handoff —
+    // tiles resume their normal spot and behavior back in the field
+    // rather than staying stuck mid-gather off-screen.
+    function revert() {
+      if (!handoffDone) return;
+      handoffDone = false;
+      chosen.forEach(function (t) {
+        t.el.style.position = "";
+        t.el.style.left = "";
+        t.el.style.top = "";
+        t.el.style.zIndex = "";
+        t.el.style.transform = "";
+        t.frozen = false;
+        t.floatEl.style.animationName = "";
+        t.floatEl.style.transform = "";
+      });
+    }
+
+    function gEaseInOut(p) {
+      return p * p * (3 - 2 * p); // smoothstep
+    }
+
+    function applyGatherProgress(p) {
+      if (p <= 0) {
+        revert();
+        return;
+      }
+      handoff();
+      var eased = gEaseInOut(p);
+      for (var i = 0; i < chosen.length; i++) {
+        var t = chosen[i];
+        var x = t.gatherStartX + (t.gatherEndX - t.gatherStartX) * eased;
+        var y = t.gatherStartY + (t.gatherEndY - t.gatherStartY) * eased;
+        var rot = t.gatherStartRot + (t.gatherEndRot - t.gatherStartRot) * eased;
+        t.el.style.left = x + "px";
+        t.el.style.top = y + "px";
+        t.el.style.transform = "rotate(" + rot + "deg)";
+      }
+      if (gatherButton) {
+        gatherButton.classList.toggle("visible", p > 0.97);
+      }
+    }
+
+    // ---- manual pin, identical approach to the main page's zoom-out ---
+    var gViewportHeight = 0;
+    var gSpacerHeight = 0;
+
+    function gPin(state, bottomOffset) {
+      if (state === "during") {
+        gatherViewport.style.position = "fixed";
+        gatherViewport.style.top = "0";
+      } else if (state === "after") {
+        gatherViewport.style.position = "absolute";
+        gatherViewport.style.top = bottomOffset + "px";
+      } else {
+        gatherViewport.style.position = "absolute";
+        gatherViewport.style.top = "0";
+      }
+    }
+
+    function gMeasure() {
+      gSpacerHeight = gatherSpacer.offsetHeight;
+      gViewportHeight = Math.max(
+        window.innerHeight,
+        (window.visualViewport && window.visualViewport.height) || 0
+      );
+    }
+
+    function gUpdate() {
+      var rect = gatherSpacer.getBoundingClientRect();
+      var total = gSpacerHeight - gViewportHeight;
+
+      if (total <= 0) {
+        gPin("before", 0);
+        applyGatherProgress(1);
+        return;
+      }
+
+      if (rect.top > 0) {
+        gPin("before", 0);
+        applyGatherProgress(0);
+      } else if (rect.bottom <= gViewportHeight) {
+        gPin("after", gSpacerHeight - gViewportHeight);
+        applyGatherProgress(1);
+      } else {
+        gPin("during", 0);
+        var p = -rect.top / total;
+        if (p < 0) p = 0;
+        if (p > 1) p = 1;
+        applyGatherProgress(p);
+      }
+    }
+
+    var gTicking = false;
+    function gOnScroll() {
+      if (gTicking) return;
+      gTicking = true;
+      requestAnimationFrame(function () {
+        gUpdate();
+        gTicking = false;
+      });
+    }
+
+    function gRefresh() {
+      gMeasure();
+      gPin("before", 0);
+      gUpdate();
+    }
+
+    window.addEventListener("scroll", gOnScroll, { passive: true });
+    window.addEventListener("resize", gRefresh);
+    window.addEventListener("orientationchange", gRefresh);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", gRefresh);
+    }
+    window.addEventListener("load", function () {
+      gRefresh();
+      setTimeout(gRefresh, 400);
+    });
+
+    gRefresh();
+  }
 })();
