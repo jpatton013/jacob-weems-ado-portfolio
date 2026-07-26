@@ -5,7 +5,7 @@
   // Bump this as more batches of images get added to images/floats/
   // (float-001.jpg, float-002.jpg, ... sequential, zero-padded to 3
   // digits). Everything else below adapts automatically to the count.
-  var FLOAT_COUNT = 319;
+  var FLOAT_COUNT = 318;
 
   // Weighted size buckets rather than one flat rand(min,max) range — a
   // flat range still LOOKS fairly uniform because most random values land
