@@ -210,27 +210,6 @@ html, body {
   z-index: 2;
 }
 
-/* On narrow/portrait screens, side-by-side halves at height:100% each
-   turn into two tall, cramped slivers. Stacked instead, each half gets
-   the full screen width and roughly half the height, same as it would
-   read as two canvases hung one above the other rather than side by
-   side. */
-@media (max-width: 700px) {
-  .opener-split {
-    flex-direction: column;
-  }
-  .opener-split img {
-    width: 100%;
-    height: auto;
-    min-height: 0;
-    flex: 1 1 0;
-  }
-  .opener-split img:first-child,
-  .opener-split img:last-child {
-    object-position: center center;
-  }
-}
-
 /* Bottom-right, not centered — centering it landed it right on the seam
    between the two halves of the split opener on wide/desktop screens. */
 .scroll-hint {
@@ -422,6 +401,16 @@ img.swap:hover {
     height: auto;
   }
   .panel-row figure {
+    /* The base rule sets flex: 1 1 0 (flex-basis: 0), which is meant
+       for the row layout on desktop. In a column direction with an
+       auto-height container, that flex-basis of 0 wins over the height
+       below for sizing the main axis, so every panel was collapsing to
+       zero height instead of the intended 60vh — which is why the
+       whole piece was disappearing on mobile rather than just stacking.
+       Overriding flex to a fixed, non-growing basis here makes the
+       explicit height actually apply. */
+    flex: none;
+    width: 100%;
     height: 60vh;
   }
 }
@@ -648,6 +637,23 @@ img.swap:hover {
     flex-direction: column;
     gap: 6vh;
     margin: 9vh auto;
+  }
+
+  /* The three flower still lifes (row-3) stay side by side even on
+     phones instead of stacking like the general .row rule above — same
+     specificity, so this just needs to come after it in the cascade.
+     min-width:0 lets flex actually shrink each figure below its
+     content size instead of overflowing the narrow viewport. */
+  .row-3 {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 2vw;
+    margin: 6vh auto;
+  }
+
+  .row-3 figure {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   /* The desktop vh-based margins throughout (14–22vh a piece) were tuned
