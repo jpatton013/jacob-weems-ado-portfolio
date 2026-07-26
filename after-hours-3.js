@@ -1,7 +1,8 @@
 // after-hours-3.html only: same scroll-scrub setup as the first two
-// reels, pointed at a third set of frames. TODO once frames arrive: bump
-// FRAME_COUNT below to match how many land in images/reel-3/. Terminal
-// page for now — no further chain past this one.
+// reels, pointed at the third piece's 32 frames. No finished film for
+// this one yet, so it fails quietly into a "more soon" caption same as
+// after-hours-2.js did before its video existed. Terminal page for now
+// — no further chain past this one.
 
 (function () {
   "use strict";
@@ -16,8 +17,7 @@
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
 
-  // TODO: update once the third piece's frames are uploaded.
-  var FRAME_COUNT = 1;
+  var FRAME_COUNT = 32;
   var SCRUB_FRACTION = 0.75;
 
   function frameSrc(n) {
