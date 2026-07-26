@@ -32,6 +32,17 @@
   </div>
 </section>
 
+<!-- Barely-there, deliberately unlabeled — findable, not offered.
+     lights-out.js handles the dim + letterbox transition and hands off
+     to after-hours.html once it finishes. -->
+<button type="button" class="lightswitch" id="lightswitch" aria-label="lights"></button>
+
+<div class="lights-out" id="lights-out" aria-hidden="true">
+  <div class="lights-out-bar lights-out-bar-top"></div>
+  <div class="lights-out-bar lights-out-bar-bottom"></div>
+</div>
+
 <script src="explosion.js"></script>
+<script src="lights-out.js"></script>
 </body>
 </html>

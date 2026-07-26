@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Weems-Ado</title>
+<meta name="description" content="Jacob Weems-Ado.">
+<link rel="stylesheet" href="after-hours.css">
+</head>
+<body>
+
+<!-- Arrives already dark and letterboxed — explosion.html's lightswitch
+     closes the lights/bars down before handing off here, so the page
+     swap underneath that transition is invisible; this is meant to
+     read as the same room with the lights off, not a new page. -->
+<a class="back-link" href="explosion.html">&larr; back</a>
+
+<div class="ah-bar ah-bar-top"></div>
+<div class="ah-bar ah-bar-bottom"></div>
+<div class="ah-spotlight" aria-hidden="true"></div>
+
+<!-- Scroll drives which of the 102 frames is showing (see after-hours.js).
+     Once you scroll far enough to reach the last frame, an old-movie
+     countdown runs on its own, then the finished film takes over and
+     plays for real. -->
+<section class="ah-spacer" id="ah-spacer">
+  <div class="ah-viewport" id="ah-viewport">
+    <img class="ah-frame" id="ah-frame" src="images/reel/frame-001.jpg" alt="">
+
+    <div class="ah-countdown" id="ah-countdown" aria-hidden="true">
+      <div class="ah-countdown-ring">
+        <span class="ah-countdown-num" id="ah-countdown-num">5</span>
+      </div>
+    </div>
+
+    <video class="ah-video" id="ah-video" src="videos/reel.mp4" playsinline preload="none"></video>
+    <button type="button" class="ah-sound-btn" id="ah-sound-btn" hidden>tap for sound</button>
+  </div>
+</section>
+
+<footer class="ah-end">
+  <a href="explosion.html">back to the mess &rarr;</a>
+</footer>
+
+<script src="after-hours.js"></script>
+</body>
+</html>

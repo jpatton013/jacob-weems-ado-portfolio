@@ -218,3 +218,72 @@ html, body {
   background: #3a352c;
   color: #f3efe8;
 }
+
+/* ---------- the switch (an easter egg, not a feature) ---------- */
+
+/* No label, no border most of the time — just a slightly darker patch
+   in the corner of the page. Nothing tells you it's clickable; you
+   either notice it or you don't. */
+.lightswitch {
+  position: fixed;
+  bottom: 3vh;
+  left: 3vw;
+  z-index: 250;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.lightswitch:hover {
+  background: rgba(0, 0, 0, 0.16);
+  transform: scale(1.1);
+}
+
+/* ---------- lights out (the transition into after-hours.html) ---------- */
+
+/* Fixed over the whole page. Two things happen at once when .active is
+   added: this scrim fades the entire scattered field to black, and the
+   two bars below close in from top/bottom like a movie letterboxing in
+   — by the time both finish, the screen reads as fully dark and framed,
+   ready to hand off to after-hours.html, which starts already in that
+   same state so the swap between pages is invisible. */
+.lights-out {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.1s ease;
+}
+
+.lights-out.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.lights-out-bar {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: #000;
+  transition: height 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+
+.lights-out-bar-top {
+  top: 0;
+}
+
+.lights-out-bar-bottom {
+  bottom: 0;
+}
+
+.lights-out.active .lights-out-bar {
+  height: 13vh;
+}
