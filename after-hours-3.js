@@ -1,8 +1,8 @@
 // after-hours-3.html only: same scroll-scrub setup as the first two
 // reels, pointed at the third piece's 32 frames. No finished film for
-// this one yet and no countdown (piece-1-only) — it fails quietly into
-// a "more soon" caption same as after-hours-2.js did before its video
-// existed. Chains onward to after-hours-4.html.
+// this one yet and no countdown (piece-1-only) — it fails silently and
+// just holds on the last frame if videos/reel-3.mp4 isn't there yet.
+// Chains onward to after-hours-4.html.
 
 (function () {
   "use strict";
@@ -39,39 +39,11 @@
     for (var i = n; i <= n + 6; i++) preload(i);
   }
 
-  // ---- "more soon" caption, shown if there's no video to land on yet ----
-  var comingSoon = null;
-  function showComingSoon() {
-    if (comingSoon) return;
-    comingSoon = document.createElement("p");
-    comingSoon.textContent = "the film for this one is still coming — check back soon";
-    comingSoon.style.position = "absolute";
-    comingSoon.style.left = "50%";
-    comingSoon.style.top = "50%";
-    comingSoon.style.transform = "translate(-50%, -50%)";
-    comingSoon.style.zIndex = "55";
-    comingSoon.style.fontSize = "0.8rem";
-    comingSoon.style.letterSpacing = "0.1em";
-    comingSoon.style.textTransform = "uppercase";
-    comingSoon.style.color = "rgba(255, 255, 255, 0.65)";
-    comingSoon.style.textAlign = "center";
-    comingSoon.style.width = "70vw";
-    comingSoon.style.opacity = "0";
-    comingSoon.style.transition = "opacity 1s ease";
-    viewport.appendChild(comingSoon);
-    requestAnimationFrame(function () {
-      comingSoon.style.opacity = "1";
-    });
-  }
-
   // ---- straight to video (no countdown for this piece), fires once ----
   var sequenceStarted = false;
 
   function startVideo() {
-    if (!video) {
-      showComingSoon();
-      return;
-    }
+    if (!video) return;
     video.classList.add("visible");
     video.muted = true;
     var playPromise = video.play();
@@ -90,7 +62,6 @@
     video.addEventListener("error", function () {
       video.classList.remove("visible");
       if (soundBtn) soundBtn.hidden = true;
-      showComingSoon();
     });
   }
 

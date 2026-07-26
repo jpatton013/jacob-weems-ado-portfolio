@@ -4,8 +4,8 @@
 // it's the only reel with something to actually count down into) — once
 // scrolling reaches the last frame it just tries videos/reel-2.mp4
 // directly; if that file isn't there yet (or fails to load), it fails
-// quietly into a "more soon" caption instead of getting stuck or
-// throwing.
+// silently and just holds on the last frame rather than getting stuck
+// or throwing.
 
 (function () {
   "use strict";
@@ -42,39 +42,11 @@
     for (var i = n; i <= n + 6; i++) preload(i);
   }
 
-  // ---- "more soon" caption, shown if there's no video to land on yet ----
-  var comingSoon = null;
-  function showComingSoon() {
-    if (comingSoon) return;
-    comingSoon = document.createElement("p");
-    comingSoon.textContent = "the film for this one is still coming — check back soon";
-    comingSoon.style.position = "absolute";
-    comingSoon.style.left = "50%";
-    comingSoon.style.top = "50%";
-    comingSoon.style.transform = "translate(-50%, -50%)";
-    comingSoon.style.zIndex = "55";
-    comingSoon.style.fontSize = "0.8rem";
-    comingSoon.style.letterSpacing = "0.1em";
-    comingSoon.style.textTransform = "uppercase";
-    comingSoon.style.color = "rgba(255, 255, 255, 0.65)";
-    comingSoon.style.textAlign = "center";
-    comingSoon.style.width = "70vw";
-    comingSoon.style.opacity = "0";
-    comingSoon.style.transition = "opacity 1s ease";
-    viewport.appendChild(comingSoon);
-    requestAnimationFrame(function () {
-      comingSoon.style.opacity = "1";
-    });
-  }
-
   // ---- straight to video (no countdown for this piece), fires once ----
   var sequenceStarted = false;
 
   function startVideo() {
-    if (!video) {
-      showComingSoon();
-      return;
-    }
+    if (!video) return;
     video.classList.add("visible");
     // Starts muted so it autoplays on its own in every browser — "tap
     // for sound" just unmutes what's already playing rather than being
@@ -100,7 +72,6 @@
     video.addEventListener("error", function () {
       video.classList.remove("visible");
       if (soundBtn) soundBtn.hidden = true;
-      showComingSoon();
     });
   }
 

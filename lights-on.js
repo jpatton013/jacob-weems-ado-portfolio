@@ -9,7 +9,11 @@
 // it, saved to localStorage right before navigating away. lights-out.js
 // reads this back on the way in, so turning the lights back off lands
 // you on the same piece at the same spot instead of restarting at the
-// first reel every time.
+// first reel every time — but only within that same visit. Two things
+// clear it instead: reaching the true end of the last piece (see the
+// ah-complete flag after-hours-4.js sets), and going all the way back
+// to the landing page (see the resume-clear in script.js) — either one
+// means the next lights-off should start over from the first reel.
 
 (function () {
   "use strict";
@@ -25,11 +29,18 @@
     firing = true;
 
     try {
-      var page = window.location.pathname.split("/").pop() || "after-hours.html";
-      localStorage.setItem(
-        "ahResume",
-        JSON.stringify({ page: page, scrollY: window.scrollY })
-      );
+      if (document.body.dataset.ahComplete === "1") {
+        // Finished the whole reel this visit — don't save a spot to
+        // resume, and clear out anything saved from earlier in the
+        // session so the next lights-off starts fresh at piece one.
+        localStorage.removeItem("ahResume");
+      } else {
+        var page = window.location.pathname.split("/").pop() || "after-hours.html";
+        localStorage.setItem(
+          "ahResume",
+          JSON.stringify({ page: page, scrollY: window.scrollY })
+        );
+      }
     } catch (e) {
       // Storage unavailable (private browsing, etc.) — just skip the
       // resume feature rather than breaking the transition.

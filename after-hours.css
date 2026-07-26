@@ -310,16 +310,20 @@ body.ah-lights-on-active .ah-spotlight {
   color: #000;
 }
 
-/* Credit line, tucked just under the frame — only relevant once the
-   video is actually up, so it fades in alongside it rather than sitting
-   there the whole scroll. Sat at bottom:4vh before, which put it fully
-   underneath the 13vh letterbox bar (z-index 300) — invisible and
-   unclickable no matter what this element's own opacity said. Now
-   raised above the bars and clear of that dead zone entirely, with a
-   bigger padded hit area so the link is actually easy to tap. */
+/* Credit line, sitting in the black letterbox band below the frame —
+   only relevant once the video is actually up, so it fades in alongside
+   it rather than sitting there the whole scroll. Went through two
+   wrong positions before this: bottom:4vh put it fully underneath the
+   bar (z-index 300 above its old z-index 60, so invisible no matter
+   what); bottom:15vh raised it above the bar but sat right at the
+   boundary of the visible video area, close enough to risk overlapping
+   the picture itself. This sits comfortably inside the bottom bar's
+   dead zone — below the actual piece, still on-screen with no
+   scrolling needed — with a padded hit area so the link is easy to
+   tap. */
 .ah-credit {
   position: absolute;
-  bottom: 15vh;
+  bottom: 5vh;
   left: 50%;
   transform: translateX(-50%);
   z-index: 320;

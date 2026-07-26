@@ -1,8 +1,13 @@
 // after-hours-4.html only: same scroll-scrub setup as the earlier
 // reels, pointed at the fourth piece's 80 frames. No finished film for
-// this one yet and no countdown (piece-1-only) — it fails quietly into
-// a "more soon" caption same as the others did before their videos
-// existed. Terminal page for now — no further chain past this one.
+// this one yet and no countdown (piece-1-only) — it fails silently and
+// just holds on the last frame if videos/reel-4.mp4 isn't there yet.
+// Terminal page for now — no further chain past this one.
+//
+// This is also the only piece that marks the reel "complete" (see the
+// ah-complete flag set in beginSequence below) — lights-on.js checks
+// that flag to decide whether to remember your spot or start the whole
+// thing over next time the lights go off.
 
 (function () {
   "use strict";
@@ -39,39 +44,11 @@
     for (var i = n; i <= n + 6; i++) preload(i);
   }
 
-  // ---- "more soon" caption, shown if there's no video to land on yet ----
-  var comingSoon = null;
-  function showComingSoon() {
-    if (comingSoon) return;
-    comingSoon = document.createElement("p");
-    comingSoon.textContent = "the film for this one is still coming — check back soon";
-    comingSoon.style.position = "absolute";
-    comingSoon.style.left = "50%";
-    comingSoon.style.top = "50%";
-    comingSoon.style.transform = "translate(-50%, -50%)";
-    comingSoon.style.zIndex = "55";
-    comingSoon.style.fontSize = "0.8rem";
-    comingSoon.style.letterSpacing = "0.1em";
-    comingSoon.style.textTransform = "uppercase";
-    comingSoon.style.color = "rgba(255, 255, 255, 0.65)";
-    comingSoon.style.textAlign = "center";
-    comingSoon.style.width = "70vw";
-    comingSoon.style.opacity = "0";
-    comingSoon.style.transition = "opacity 1s ease";
-    viewport.appendChild(comingSoon);
-    requestAnimationFrame(function () {
-      comingSoon.style.opacity = "1";
-    });
-  }
-
   // ---- straight to video (no countdown for this piece), fires once ----
   var sequenceStarted = false;
 
   function startVideo() {
-    if (!video) {
-      showComingSoon();
-      return;
-    }
+    if (!video) return;
     video.classList.add("visible");
     video.muted = true;
     var playPromise = video.play();
@@ -90,7 +67,6 @@
     video.addEventListener("error", function () {
       video.classList.remove("visible");
       if (soundBtn) soundBtn.hidden = true;
-      showComingSoon();
     });
   }
 
@@ -105,6 +81,12 @@
   function beginSequence() {
     if (sequenceStarted) return;
     sequenceStarted = true;
+    // Marks the reel as fully watched, on this same page, so lights-
+    // on.js (running in the same document) knows not to save a resume
+    // spot when the lights get turned back on from here — the whole
+    // point of getting to the end is that the next lights-off starts
+    // over at the beginning instead of jumping right back here.
+    document.body.dataset.ahComplete = "1";
     startVideo();
   }
 

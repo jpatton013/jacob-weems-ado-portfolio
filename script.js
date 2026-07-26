@@ -335,3 +335,19 @@
     });
   });
 })();
+
+// index.html only (this is the landing page every "back" link on the
+// site returns to): clears the after-hours reel's saved resume spot.
+// The resume feature (see lights-on.js) is meant to survive a quick
+// lights-on/lights-off round trip, not stick around indefinitely — once
+// you've come all the way back to the mess page, the next time the
+// lights go off it should start over from the first reel rather than
+// jumping back into wherever you left off last visit.
+(function () {
+  "use strict";
+  try {
+    localStorage.removeItem("ahResume");
+  } catch (e) {
+    // Storage unavailable — nothing to clear.
+  }
+})();
