@@ -1,9 +1,7 @@
-// after-hours-2.html only: same scroll-scrub setup as after-hours.js,
-// pointed at the second piece's 38 frames. There's no finished film for
-// this piece yet, so once the countdown runs it tries to play
-// videos/reel-2.mp4 same as the first reel — if that file isn't there
-// yet (or fails to load), it fails quietly into a "more soon" caption
-// instead of getting stuck or throwing.
+// after-hours-3.html only: same scroll-scrub setup as the first two
+// reels, pointed at a third set of frames. TODO once frames arrive: bump
+// FRAME_COUNT below to match how many land in images/reel-3/. Terminal
+// page for now — no further chain past this one.
 
 (function () {
   "use strict";
@@ -18,12 +16,13 @@
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
 
-  var FRAME_COUNT = 38;
+  // TODO: update once the third piece's frames are uploaded.
+  var FRAME_COUNT = 1;
   var SCRUB_FRACTION = 0.75;
 
   function frameSrc(n) {
     var padded = String(n).padStart(3, "0");
-    return "images/reel-2/frame-" + padded + ".jpg";
+    return "images/reel-3/frame-" + padded + ".jpg";
   }
 
   var preloaded = {};
@@ -104,17 +103,10 @@
       return;
     }
     video.classList.add("visible");
-    // Starts muted so it autoplays on its own in every browser — "tap
-    // for sound" just unmutes what's already playing rather than being
-    // what starts it.
     video.muted = true;
     var playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(function () {
-        // The no-file-yet case (play() rejects because there's nothing
-        // to decode) is handled by the error listener below, which
-        // swaps in the caption — this catch is just the rare fallback
-        // for a real file that even muted autoplay got blocked on.
         if (soundBtn && video.error === null) {
           soundBtn.hidden = false;
           soundBtn.textContent = "tap to play";
@@ -238,35 +230,4 @@
   showFrame(1);
   preload(2);
   refresh();
-})();
-
-// ---- reel-change hand-off into after-hours-3.html ----
-// Same trigger as after-hours.js: scroll to the true bottom of the page
-// and it flickers into the next piece, reset to the top.
-(function () {
-  "use strict";
-
-  var overlay = document.getElementById("ah-reload");
-  if (!overlay) return;
-
-  var firing = false;
-
-  function atTrueBottom() {
-    return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-  }
-
-  function checkBottom() {
-    if (firing) return;
-    if (window.scrollY < 400) return;
-    if (!atTrueBottom()) return;
-
-    firing = true;
-    overlay.classList.add("active");
-
-    setTimeout(function () {
-      window.location.href = "after-hours-3.html";
-    }, 1100);
-  }
-
-  window.addEventListener("scroll", checkBottom, { passive: true });
 })();

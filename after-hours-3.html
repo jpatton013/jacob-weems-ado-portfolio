@@ -9,13 +9,11 @@
 </head>
 <body>
 
-<!-- Reached via after-hours.html's reel-change flicker once you scroll
-     past the first piece's video. Arrives already dark/letterboxed —
-     same "invisible page swap" trick as the rest of the site's
-     transitions — and runs the same scroll-scrub setup as the first
-     reel, just pointed at a second, shorter set of frames. No finished
-     film for this one yet (see after-hours-2.js): it holds on the last
-     frame until a video file shows up at videos/reel-2.mp4. -->
+<!-- Reached via after-hours-2.html's reel-change flicker. Same setup as
+     the first two reels, pointed at a third set of frames — TODO once
+     frames are uploaded: drop them into images/reel-3/ as frame-001.jpg,
+     frame-002.jpg, etc, and update FRAME_COUNT in after-hours-3.js to
+     match. Terminal page for now — no further chain past this one. -->
 <a class="back-link" href="index.html">&larr; back</a>
 
 <button type="button" class="ah-lights-on-btn" id="ah-lights-on" aria-label="lights"></button>
@@ -27,7 +25,7 @@
 
 <section class="ah-spacer" id="ah-spacer">
   <div class="ah-viewport" id="ah-viewport">
-    <img class="ah-frame" id="ah-frame" src="images/reel-2/frame-001.jpg" alt="">
+    <img class="ah-frame" id="ah-frame" src="images/reel-3/frame-001.jpg" alt="">
 
     <div class="ah-countdown" id="ah-countdown" aria-hidden="true">
       <div class="ah-countdown-ring">
@@ -35,23 +33,16 @@
       </div>
     </div>
 
-    <video class="ah-video" id="ah-video" src="videos/reel-2.mp4" playsinline muted preload="none"></video>
+    <video class="ah-video" id="ah-video" src="videos/reel-3.mp4" playsinline muted preload="none"></video>
     <button type="button" class="ah-sound-btn" id="ah-sound-btn" hidden>tap for sound</button>
   </div>
 </section>
 
-<!-- Same reel-change hand-off as after-hours.html, chained one piece
-     further: scroll to the true bottom and it flickers into
-     after-hours-3.html, reset to the top for the third piece. -->
 <footer class="ah-end" id="ah-end">
-  <p class="ah-end-hint" id="ah-end-hint">keep scrolling&hellip;</p>
+  <p class="ah-end-hint">that's it for now</p>
 </footer>
 
-<div class="ah-reload" id="ah-reload" aria-hidden="true">
-  <div class="ah-reload-flicker"></div>
-</div>
-
-<script src="after-hours-2.js"></script>
+<script src="after-hours-3.js"></script>
 <script src="lights-on.js"></script>
 </body>
 </html>

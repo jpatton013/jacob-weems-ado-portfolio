@@ -10,6 +10,7 @@
   var frameImg = document.getElementById("ah-frame");
   var countdown = document.getElementById("ah-countdown");
   var countdownNum = document.getElementById("ah-countdown-num");
+  var countdownRing = countdown ? countdown.querySelector(".ah-countdown-ring") : null;
   var video = document.getElementById("ah-video");
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
@@ -68,6 +69,13 @@
       // never left before being re-added.
       void countdownNum.offsetWidth;
       countdownNum.classList.add("pop");
+      // Same reflow trick for the sweep hand, so the clock-wipe restarts
+      // from 0deg on every number instead of only animating once.
+      if (countdownRing) {
+        countdownRing.classList.remove("sweep");
+        void countdownRing.offsetWidth;
+        countdownRing.classList.add("sweep");
+      }
       i++;
       setTimeout(next, 700);
     }

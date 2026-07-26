@@ -235,14 +235,14 @@ html, body {
   height: 34px;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.08);
+  background: #000;
   cursor: pointer;
   padding: 0;
   transition: background 0.4s ease, transform 0.3s ease;
 }
 
 .lightswitch:hover {
-  background: rgba(0, 0, 0, 0.16);
+  background: #333;
   transform: scale(1.1);
 }
 

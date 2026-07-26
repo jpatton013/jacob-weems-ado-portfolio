@@ -19,8 +19,11 @@
 
 <!-- Static the whole way through — not just at the end of the scroll —
      so there's always a quiet way out back to the mess page without
-     scrolling all the way down. -->
-<a class="ah-exit-link" href="explosion.html">turn the lights back on</a>
+     scrolling all the way down. Same spot as explosion.html's own
+     lightswitch, right next to the back link; lights-on.js handles the
+     soft fade-back-up before it navigates. -->
+<button type="button" class="ah-lights-on-btn" id="ah-lights-on" aria-label="lights"></button>
+<div class="ah-lights-on-scrim" id="ah-lights-on-scrim" aria-hidden="true"></div>
 
 <div class="ah-bar ah-bar-top"></div>
 <div class="ah-bar ah-bar-bottom"></div>
@@ -66,5 +69,6 @@
 </div>
 
 <script src="after-hours.js"></script>
+<script src="lights-on.js"></script>
 </body>
 </html>

@@ -35,28 +35,46 @@ html, body {
 }
 
 /* Static for the whole scroll, not just at the end — a quiet, always-
-   available way out back to the mess page rather than something you
-   only find after scrolling all the way through. */
-.ah-exit-link {
+   available way back to the mess page. Same position as explosion.html's
+   lightswitch (right next to that page's back link), just inverted to a
+   white circle since this page is dark instead of light. */
+.ah-lights-on-btn {
   position: fixed;
   top: 3vh;
-  right: 4vw;
+  left: 13vw;
   z-index: 400;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.75rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  padding: 0.7em 1.2em;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.4s ease, transform 0.3s ease;
 }
 
-.ah-exit-link:hover {
+.ah-lights-on-btn:hover {
   background: #fff;
-  color: #000;
-  border-color: #fff;
+  transform: scale(1.1);
+}
+
+/* Bright scrim that fades in as the "lights back on" transition plays —
+   mirrors explosion.html's lights-out scrim but in reverse (fading to
+   white instead of black) so the hand-off back to the mess page reads as
+   the same slow, soft fade rather than a hard cut. */
+.ah-lights-on-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 480;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.1s ease;
+}
+
+.ah-lights-on-scrim.active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* ---------- the theater frame ---------- */
@@ -72,6 +90,9 @@ html, body {
   background: #000;
   z-index: 300;
   pointer-events: none;
+  /* No transition by default (bars just sit closed on arrival) — the
+     lights-on transition below opts into this via a body class so the
+     bars only animate when actually opening back up. */
 }
 
 .ah-bar-top {
@@ -96,6 +117,18 @@ html, body {
     transparent 45%,
     rgba(0, 0, 0, 0.65) 100%
   );
+  transition: opacity 1.1s ease;
+}
+
+/* ---------- lights back on (the transition out, to explosion.html) ---------- */
+
+body.ah-lights-on-active .ah-bar {
+  height: 0;
+  transition: height 1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+body.ah-lights-on-active .ah-spotlight {
+  opacity: 0;
 }
 
 /* ---------- the scrubbed reel ---------- */
@@ -141,27 +174,57 @@ html, body {
   opacity: 1;
 }
 
+/* Styled after old countdown leaders — the circle-and-sweeping-hand
+   "clock wipe" used to mark reel changes, rather than a clean modern
+   number pop. Warm/cream instead of pure white/black, a double ring like
+   a worn print, and a hand that sweeps a full turn each second. */
 .ah-countdown-ring {
+  position: relative;
   width: min(30vw, 260px);
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  /* Solid dark fill so the number reads clearly against busy sketch
-     frames underneath — a bare outline let the artwork show straight
-     through and swallowed the digit. */
-  background: rgba(0, 0, 0, 0.82);
-  box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.6);
+  border: 3px double #e7dcc3;
+  background: radial-gradient(circle, rgba(24, 18, 10, 0.9), rgba(0, 0, 0, 0.92));
+  box-shadow:
+    0 0 0 7px rgba(231, 220, 195, 0.12),
+    0 0 44px 12px rgba(0, 0, 0, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+/* The sweep hand — a thin wedge that rotates a full turn in sync with
+   each number, like the clock-wipe on old film countdown leaders. */
+.ah-countdown-ring::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 50%;
+  background: rgba(231, 220, 195, 0.75);
+  transform-origin: top center;
+  transform: translateX(-50%) rotate(0deg);
+}
+
+.ah-countdown-ring.sweep::before {
+  animation: ah-sweep 0.7s linear;
+}
+
+@keyframes ah-sweep {
+  from { transform: translateX(-50%) rotate(0deg); }
+  to   { transform: translateX(-50%) rotate(360deg); }
 }
 
 .ah-countdown-num {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
   font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: 800;
-  color: #fff;
+  font-weight: 700;
+  color: #efe4cc;
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
 }
 
 .ah-countdown-num.pop {
