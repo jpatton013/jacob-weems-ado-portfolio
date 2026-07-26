@@ -4,6 +4,12 @@
 // the bars open, the vignette fades, and a white scrim rises over
 // everything, so the swap back into explosion.html (which is always
 // sitting there bright) reads as one continuous fade rather than a cut.
+//
+// Also remembers where you were: which piece and how far scrolled into
+// it, saved to localStorage right before navigating away. lights-out.js
+// reads this back on the way in, so turning the lights back off lands
+// you on the same piece at the same spot instead of restarting at the
+// first reel every time.
 
 (function () {
   "use strict";
@@ -17,6 +23,17 @@
   btn.addEventListener("click", function () {
     if (firing) return;
     firing = true;
+
+    try {
+      var page = window.location.pathname.split("/").pop() || "after-hours.html";
+      localStorage.setItem(
+        "ahResume",
+        JSON.stringify({ page: page, scrollY: window.scrollY })
+      );
+    } catch (e) {
+      // Storage unavailable (private browsing, etc.) — just skip the
+      // resume feature rather than breaking the transition.
+    }
 
     document.body.classList.add("ah-lights-on-active");
     if (scrim) scrim.classList.add("active");

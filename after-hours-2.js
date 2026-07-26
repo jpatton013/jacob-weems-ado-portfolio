@@ -1,9 +1,11 @@
 // after-hours-2.html only: same scroll-scrub setup as after-hours.js,
 // pointed at the second piece's 38 frames. There's no finished film for
-// this piece yet, so once the countdown runs it tries to play
-// videos/reel-2.mp4 same as the first reel — if that file isn't there
-// yet (or fails to load), it fails quietly into a "more soon" caption
-// instead of getting stuck or throwing.
+// this piece yet, and no countdown either (that's piece-1-only, since
+// it's the only reel with something to actually count down into) — once
+// scrolling reaches the last frame it just tries videos/reel-2.mp4
+// directly; if that file isn't there yet (or fails to load), it fails
+// quietly into a "more soon" caption instead of getting stuck or
+// throwing.
 
 (function () {
   "use strict";
@@ -11,9 +13,6 @@
   var spacer = document.getElementById("ah-spacer");
   var viewport = document.getElementById("ah-viewport");
   var frameImg = document.getElementById("ah-frame");
-  var countdown = document.getElementById("ah-countdown");
-  var countdownNum = document.getElementById("ah-countdown-num");
-  var countdownRing = countdown ? countdown.querySelector(".ah-countdown-ring") : null;
   var video = document.getElementById("ah-video");
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
@@ -68,35 +67,8 @@
     });
   }
 
-  // ---- countdown -> video, fires once ----
+  // ---- straight to video (no countdown for this piece), fires once ----
   var sequenceStarted = false;
-
-  function runCountdown() {
-    var counts = [5, 4, 3, 2, 1];
-    var i = 0;
-    countdown.classList.add("visible");
-
-    function next() {
-      if (i >= counts.length) {
-        countdown.classList.remove("visible");
-        startVideo();
-        return;
-      }
-      countdownNum.textContent = String(counts[i]);
-      countdownNum.classList.remove("pop");
-      void countdownNum.offsetWidth;
-      countdownNum.classList.add("pop");
-      if (countdownRing) {
-        countdownRing.classList.remove("sweep");
-        void countdownRing.offsetWidth;
-        countdownRing.classList.add("sweep");
-      }
-      i++;
-      setTimeout(next, 700);
-    }
-
-    next();
-  }
 
   function startVideo() {
     if (!video) {
@@ -143,7 +115,7 @@
   function beginSequence() {
     if (sequenceStarted) return;
     sequenceStarted = true;
-    runCountdown();
+    startVideo();
   }
 
   // ---- manual pin — same approach used throughout the site ----
@@ -269,4 +241,38 @@
   }
 
   window.addEventListener("scroll", checkBottom, { passive: true });
+})();
+
+// ---- restore scroll spot after a lights-on/lights-off round trip ----
+(function () {
+  "use strict";
+
+  var saved;
+  try {
+    saved = localStorage.getItem("ahResume");
+  } catch (e) {
+    saved = null;
+  }
+  if (!saved) return;
+
+  var resume;
+  try {
+    resume = JSON.parse(saved);
+  } catch (e) {
+    resume = null;
+  }
+  if (!resume || !resume.page) return;
+
+  var thisPage = window.location.pathname.split("/").pop() || "after-hours-2.html";
+  if (resume.page !== thisPage) return;
+
+  var target = resume.scrollY || 0;
+  function apply() {
+    window.scrollTo(0, target);
+  }
+
+  window.addEventListener("load", function () {
+    apply();
+    setTimeout(apply, 450);
+  });
 })();

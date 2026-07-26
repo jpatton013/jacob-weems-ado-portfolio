@@ -246,6 +246,16 @@ html, body {
   transform: scale(1.1);
 }
 
+/* On narrow screens the back-link's padding makes it wide enough to run
+   into the switch at the same top row, so the switch drops below it
+   instead of sitting beside it. */
+@media (max-width: 700px) {
+  .lightswitch {
+    top: 9vh;
+    left: 4vw;
+  }
+}
+
 /* ---------- lights out (the transition into after-hours.html) ---------- */
 
 /* Fixed over the whole page. Two things happen at once when .active is

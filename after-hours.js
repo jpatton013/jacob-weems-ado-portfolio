@@ -250,3 +250,42 @@
 
   window.addEventListener("scroll", checkBottom, { passive: true });
 })();
+
+// ---- restore scroll spot after a lights-on/lights-off round trip ----
+// If the lights-back-on button was used from this exact page, lights-
+// on.js saved the scroll position before leaving. Once this page has
+// settled back into place (frames sized, bars closed), jump straight
+// back there instead of dropping the viewer at the top to re-scroll
+// through everything they already watched.
+(function () {
+  "use strict";
+
+  var saved;
+  try {
+    saved = localStorage.getItem("ahResume");
+  } catch (e) {
+    saved = null;
+  }
+  if (!saved) return;
+
+  var resume;
+  try {
+    resume = JSON.parse(saved);
+  } catch (e) {
+    resume = null;
+  }
+  if (!resume || !resume.page) return;
+
+  var thisPage = window.location.pathname.split("/").pop() || "after-hours.html";
+  if (resume.page !== thisPage) return;
+
+  var target = resume.scrollY || 0;
+  function apply() {
+    window.scrollTo(0, target);
+  }
+
+  window.addEventListener("load", function () {
+    apply();
+    setTimeout(apply, 450);
+  });
+})();

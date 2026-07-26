@@ -1,8 +1,8 @@
-// after-hours-3.html only: same scroll-scrub setup as the first two
-// reels, pointed at the third piece's 32 frames. No finished film for
+// after-hours-4.html only: same scroll-scrub setup as the earlier
+// reels, pointed at the fourth piece's 80 frames. No finished film for
 // this one yet and no countdown (piece-1-only) — it fails quietly into
-// a "more soon" caption same as after-hours-2.js did before its video
-// existed. Chains onward to after-hours-4.html.
+// a "more soon" caption same as the others did before their videos
+// existed. Terminal page for now — no further chain past this one.
 
 (function () {
   "use strict";
@@ -14,12 +14,12 @@
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
 
-  var FRAME_COUNT = 32;
+  var FRAME_COUNT = 80;
   var SCRUB_FRACTION = 0.75;
 
   function frameSrc(n) {
     var padded = String(n).padStart(3, "0");
-    return "images/reel-3/frame-" + padded + ".jpg";
+    return "images/reel-4/frame-" + padded + ".jpg";
   }
 
   var preloaded = {};
@@ -202,35 +202,6 @@
   refresh();
 })();
 
-// ---- reel-change hand-off into after-hours-4.html ----
-(function () {
-  "use strict";
-
-  var overlay = document.getElementById("ah-reload");
-  if (!overlay) return;
-
-  var firing = false;
-
-  function atTrueBottom() {
-    return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-  }
-
-  function checkBottom() {
-    if (firing) return;
-    if (window.scrollY < 400) return;
-    if (!atTrueBottom()) return;
-
-    firing = true;
-    overlay.classList.add("active");
-
-    setTimeout(function () {
-      window.location.href = "after-hours-4.html";
-    }, 1100);
-  }
-
-  window.addEventListener("scroll", checkBottom, { passive: true });
-})();
-
 // ---- restore scroll spot after a lights-on/lights-off round trip ----
 (function () {
   "use strict";
@@ -251,7 +222,7 @@
   }
   if (!resume || !resume.page) return;
 
-  var thisPage = window.location.pathname.split("/").pop() || "after-hours-3.html";
+  var thisPage = window.location.pathname.split("/").pop() || "after-hours-4.html";
   if (resume.page !== thisPage) return;
 
   var target = resume.scrollY || 0;

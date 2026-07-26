@@ -58,6 +58,40 @@ html, body {
   transform: scale(1.1);
 }
 
+/* Soft hint that the circle is clickable and what it does — the switch
+   on explosion.html gets to stay a secret since you already found this
+   one, but you shouldn't have to guess what going back does. */
+.ah-lights-on-label {
+  position: fixed;
+  top: 3vh;
+  left: calc(13vw + 46px);
+  z-index: 400;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  line-height: 34px;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* On narrow screens the back-link's padding runs into the lights-on
+   circle at the same top row, so it drops to a second row below it —
+   matching the equivalent fix for explosion.html's lightswitch. */
+@media (max-width: 700px) {
+  .ah-lights-on-btn {
+    top: 9vh;
+    left: 4vw;
+  }
+
+  .ah-lights-on-label {
+    top: 9vh;
+    left: calc(4vw + 46px);
+    font-size: 0.65rem;
+  }
+}
+
 /* Bright scrim that fades in as the "lights back on" transition plays —
    mirrors explosion.html's lights-out scrim but in reverse (fading to
    white instead of black) so the hand-off back to the mess page reads as
@@ -276,19 +310,24 @@ body.ah-lights-on-active .ah-spotlight {
   color: #000;
 }
 
-/* Credit line, tucked low in the frame — only relevant once the video
-   is actually up, so it fades in alongside it rather than sitting there
-   the whole scroll. */
+/* Credit line, tucked just under the frame — only relevant once the
+   video is actually up, so it fades in alongside it rather than sitting
+   there the whole scroll. Sat at bottom:4vh before, which put it fully
+   underneath the 13vh letterbox bar (z-index 300) — invisible and
+   unclickable no matter what this element's own opacity said. Now
+   raised above the bars and clear of that dead zone entirely, with a
+   bigger padded hit area so the link is actually easy to tap. */
 .ah-credit {
   position: absolute;
-  bottom: 4vh;
+  bottom: 15vh;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 60;
-  font-size: 0.7rem;
+  z-index: 320;
+  font-size: 0.75rem;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.65);
   text-align: center;
+  padding: 0.5em 0.9em;
   opacity: 0;
   pointer-events: none;
   transition: opacity 1s ease 0.6s;

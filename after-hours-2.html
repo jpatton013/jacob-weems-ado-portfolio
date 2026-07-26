@@ -19,21 +19,19 @@
 <a class="back-link" href="index.html">&larr; back</a>
 
 <button type="button" class="ah-lights-on-btn" id="ah-lights-on" aria-label="lights"></button>
+<span class="ah-lights-on-label" aria-hidden="true">turn the lights back on</span>
 <div class="ah-lights-on-scrim" id="ah-lights-on-scrim" aria-hidden="true"></div>
 
 <div class="ah-bar ah-bar-top"></div>
 <div class="ah-bar ah-bar-bottom"></div>
 <div class="ah-spotlight" aria-hidden="true"></div>
 
+<!-- No countdown here — that's piece-1-only, since it's the only reel
+     with a finished film to count down into so far. This one just holds
+     on the last frame and shows the "more soon" caption. -->
 <section class="ah-spacer" id="ah-spacer">
   <div class="ah-viewport" id="ah-viewport">
     <img class="ah-frame" id="ah-frame" src="images/reel-2/frame-001.jpg" alt="">
-
-    <div class="ah-countdown" id="ah-countdown" aria-hidden="true">
-      <div class="ah-countdown-ring">
-        <span class="ah-countdown-num" id="ah-countdown-num">5</span>
-      </div>
-    </div>
 
     <video class="ah-video" id="ah-video" src="videos/reel-2.mp4" playsinline muted preload="none"></video>
     <button type="button" class="ah-sound-btn" id="ah-sound-btn" hidden>tap for sound</button>
