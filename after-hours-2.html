@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jacob Weems-Ado</title>
+<meta name="description" content="Jacob Weems-Ado.">
+<link rel="stylesheet" href="after-hours.css">
+</head>
+<body>
+
+<!-- Reached via after-hours.html's reel-change flicker once you scroll
+     past the first piece's video. Arrives already dark/letterboxed —
+     same "invisible page swap" trick as the rest of the site's
+     transitions — and runs the same scroll-scrub setup as the first
+     reel, just pointed at a second, shorter set of frames. No finished
+     film for this one yet (see after-hours-2.js): it holds on the last
+     frame until a video file shows up at videos/reel-2.mp4. -->
+<a class="back-link" href="index.html">&larr; back</a>
+
+<a class="ah-exit-link" href="explosion.html">turn the lights back on</a>
+
+<div class="ah-bar ah-bar-top"></div>
+<div class="ah-bar ah-bar-bottom"></div>
+<div class="ah-spotlight" aria-hidden="true"></div>
+
+<section class="ah-spacer" id="ah-spacer">
+  <div class="ah-viewport" id="ah-viewport">
+    <img class="ah-frame" id="ah-frame" src="images/reel-2/frame-001.jpg" alt="">
+
+    <div class="ah-countdown" id="ah-countdown" aria-hidden="true">
+      <div class="ah-countdown-ring">
+        <span class="ah-countdown-num" id="ah-countdown-num">5</span>
+      </div>
+    </div>
+
+    <video class="ah-video" id="ah-video" src="videos/reel-2.mp4" playsinline muted preload="none"></video>
+    <button type="button" class="ah-sound-btn" id="ah-sound-btn" hidden>tap for sound</button>
+  </div>
+</section>
+
+<footer class="ah-end" id="ah-end">
+  <p class="ah-end-hint">that's it for now</p>
+</footer>
+
+<script src="after-hours-2.js"></script>
+</body>
+</html>

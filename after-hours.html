@@ -12,8 +12,15 @@
 <!-- Arrives already dark and letterboxed — explosion.html's lightswitch
      closes the lights/bars down before handing off here, so the page
      swap underneath that transition is invisible; this is meant to
-     read as the same room with the lights off, not a new page. -->
-<a class="back-link" href="explosion.html">&larr; back</a>
+     read as the same room with the lights off, not a new page.
+     Goes straight back to the landing page, same as every other
+     back-link on the site. -->
+<a class="back-link" href="index.html">&larr; back</a>
+
+<!-- Static the whole way through — not just at the end of the scroll —
+     so there's always a quiet way out back to the mess page without
+     scrolling all the way down. -->
+<a class="ah-exit-link" href="explosion.html">turn the lights back on</a>
 
 <div class="ah-bar ah-bar-top"></div>
 <div class="ah-bar ah-bar-bottom"></div>
@@ -33,14 +40,30 @@
       </div>
     </div>
 
-    <video class="ah-video" id="ah-video" src="videos/reel.mp4" playsinline preload="none"></video>
+    <video class="ah-video" id="ah-video" src="videos/reel.mp4" playsinline muted preload="none"></video>
     <button type="button" class="ah-sound-btn" id="ah-sound-btn" hidden>tap for sound</button>
+
+    <!-- Not claiming the shot, just pointing at what it's in conversation
+         with — Paul Schrader's First Reformed ends on a similar beat. -->
+    <p class="ah-credit" id="ah-credit">
+      inspired by the final scene of
+      <a href="https://www.youtube.com/watch?v=jr3MjqEibjc" target="_blank" rel="noopener">First Reformed</a>
+    </p>
   </div>
 </section>
 
-<footer class="ah-end">
-  <a href="explosion.html">back to the mess &rarr;</a>
+<!-- Keep scrolling past the video and, at the true bottom of the page
+     (no extra scroll distance added for this), the screen flickers like
+     a reel change and reloads at the top of after-hours-2.html — same
+     idea as earlier-work.html handing off to seascapes.html, just
+     re-themed for a projector flicker instead of a tide wash. -->
+<footer class="ah-end" id="ah-end">
+  <p class="ah-end-hint" id="ah-end-hint">keep scrolling&hellip;</p>
 </footer>
+
+<div class="ah-reload" id="ah-reload" aria-hidden="true">
+  <div class="ah-reload-flicker"></div>
+</div>
 
 <script src="after-hours.js"></script>
 </body>

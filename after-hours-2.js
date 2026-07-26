@@ -1,6 +1,9 @@
-// after-hours.html only: scroll scrubs through the 102 sketch frames,
-// then an old-movie countdown and the finished film take over on their
-// own once you've scrolled far enough to reach the last one.
+// after-hours-2.html only: same scroll-scrub setup as after-hours.js,
+// pointed at the second piece's 38 frames. There's no finished film for
+// this piece yet, so once the countdown runs it tries to play
+// videos/reel-2.mp4 same as the first reel — if that file isn't there
+// yet (or fails to load), it fails quietly into a "more soon" caption
+// instead of getting stuck or throwing.
 
 (function () {
   "use strict";
@@ -14,22 +17,14 @@
   var soundBtn = document.getElementById("ah-sound-btn");
   if (!spacer || !viewport || !frameImg) return;
 
-  var FRAME_COUNT = 102;
-  // The first 75% of the spacer's scroll distance scrubs through the
-  // frames; the remaining 25% is a held buffer where the countdown and
-  // video play out on their own timer rather than following the scroll
-  // any further — otherwise scrolling fast would cut the video off
-  // mid-play as soon as the spacer ran out.
+  var FRAME_COUNT = 38;
   var SCRUB_FRACTION = 0.75;
 
   function frameSrc(n) {
     var padded = String(n).padStart(3, "0");
-    return "images/reel/frame-" + padded + ".jpg";
+    return "images/reel-2/frame-" + padded + ".jpg";
   }
 
-  // Warms a small window of upcoming frames rather than all 102 up
-  // front, so scrubbing forward stays smooth without loading the whole
-  // sequence on page load.
   var preloaded = {};
   function preload(n) {
     if (n < 1 || n > FRAME_COUNT || preloaded[n]) return;
@@ -45,6 +40,31 @@
     currentFrame = n;
     frameImg.src = frameSrc(n);
     for (var i = n; i <= n + 6; i++) preload(i);
+  }
+
+  // ---- "more soon" caption, shown if there's no video to land on yet ----
+  var comingSoon = null;
+  function showComingSoon() {
+    if (comingSoon) return;
+    comingSoon = document.createElement("p");
+    comingSoon.textContent = "the film for this one is still coming — check back soon";
+    comingSoon.style.position = "absolute";
+    comingSoon.style.left = "50%";
+    comingSoon.style.top = "50%";
+    comingSoon.style.transform = "translate(-50%, -50%)";
+    comingSoon.style.zIndex = "55";
+    comingSoon.style.fontSize = "0.8rem";
+    comingSoon.style.letterSpacing = "0.1em";
+    comingSoon.style.textTransform = "uppercase";
+    comingSoon.style.color = "rgba(255, 255, 255, 0.65)";
+    comingSoon.style.textAlign = "center";
+    comingSoon.style.width = "70vw";
+    comingSoon.style.opacity = "0";
+    comingSoon.style.transition = "opacity 1s ease";
+    viewport.appendChild(comingSoon);
+    requestAnimationFrame(function () {
+      comingSoon.style.opacity = "1";
+    });
   }
 
   // ---- countdown -> video, fires once ----
@@ -63,9 +83,6 @@
       }
       countdownNum.textContent = String(counts[i]);
       countdownNum.classList.remove("pop");
-      // Forces a reflow so the animation actually restarts each tick,
-      // instead of silently no-opping because the class technically
-      // never left before being re-added.
       void countdownNum.offsetWidth;
       countdownNum.classList.add("pop");
       i++;
@@ -76,26 +93,37 @@
   }
 
   function startVideo() {
-    if (!video) return;
+    if (!video) {
+      showComingSoon();
+      return;
+    }
     video.classList.add("visible");
-    // Starts muted — browsers allow muted autoplay pretty much
-    // unconditionally, so the video always begins playing on its own
-    // instead of stalling on a click. "tap for sound" just unmutes the
-    // already-playing video rather than being what starts it.
+    // Starts muted so it autoplays on its own in every browser — "tap
+    // for sound" just unmutes what's already playing rather than being
+    // what starts it.
     video.muted = true;
     var playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(function () {
-        // Extremely rare fallback for browsers that block even muted
-        // autoplay — surfaces a manual play control so it's never just
-        // silently stuck.
-        if (soundBtn) {
+        // The no-file-yet case (play() rejects because there's nothing
+        // to decode) is handled by the error listener below, which
+        // swaps in the caption — this catch is just the rare fallback
+        // for a real file that even muted autoplay got blocked on.
+        if (soundBtn && video.error === null) {
           soundBtn.hidden = false;
           soundBtn.textContent = "tap to play";
         }
       });
     }
-    if (soundBtn) soundBtn.hidden = false;
+    if (soundBtn && video.error === null) soundBtn.hidden = false;
+  }
+
+  if (video) {
+    video.addEventListener("error", function () {
+      video.classList.remove("visible");
+      if (soundBtn) soundBtn.hidden = true;
+      showComingSoon();
+    });
   }
 
   if (soundBtn && video) {
@@ -112,9 +140,7 @@
     runCountdown();
   }
 
-  // ---- manual pin — same fixed/absolute toggling approach as the main
-  // page's zoom-out gallery and explosion.html's gather scene, not
-  // position:sticky, for the same cross-browser reasons those use it. ----
+  // ---- manual pin — same approach used throughout the site ----
   var viewportHeight = 0;
   var spacerHeight = 0;
 
@@ -206,39 +232,4 @@
   showFrame(1);
   preload(2);
   refresh();
-})();
-
-// ---- reel-change hand-off into after-hours-2.html ----
-// Same idea as earlier-work.js's tide-wash trigger: watch for the user
-// scrolling to the true bottom of the page (not just the end of the
-// pinned spacer above), play a short transition, then navigate. The
-// next page starts already in its own dark/letterboxed rest state, so
-// the swap underneath is invisible and it reads as one continuous reel
-// change rather than a link click.
-(function () {
-  "use strict";
-
-  var overlay = document.getElementById("ah-reload");
-  if (!overlay) return;
-
-  var firing = false;
-
-  function atTrueBottom() {
-    return window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-  }
-
-  function checkBottom() {
-    if (firing) return;
-    if (window.scrollY < 400) return;
-    if (!atTrueBottom()) return;
-
-    firing = true;
-    overlay.classList.add("active");
-
-    setTimeout(function () {
-      window.location.href = "after-hours-2.html";
-    }, 1100);
-  }
-
-  window.addEventListener("scroll", checkBottom, { passive: true });
 })();

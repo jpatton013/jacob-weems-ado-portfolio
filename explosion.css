@@ -222,18 +222,20 @@ html, body {
 /* ---------- the switch (an easter egg, not a feature) ---------- */
 
 /* No label, no border most of the time — just a slightly darker patch
-   in the corner of the page. Nothing tells you it's clickable; you
-   either notice it or you don't. */
+   sitting near the back link, up where your eye already goes when you
+   land on the page. Nothing tells you it's clickable; you either notice
+   it or you don't, but it's no longer buried in a corner you'd never
+   scroll past. */
 .lightswitch {
   position: fixed;
-  bottom: 3vh;
-  left: 3vw;
+  top: 3vh;
+  left: 13vw;
   z-index: 250;
   width: 34px;
   height: 34px;
   border: none;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.08);
   cursor: pointer;
   padding: 0;
   transition: background 0.4s ease, transform 0.3s ease;

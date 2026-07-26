@@ -34,6 +34,31 @@ html, body {
   border-color: #fff;
 }
 
+/* Static for the whole scroll, not just at the end — a quiet, always-
+   available way out back to the mess page rather than something you
+   only find after scrolling all the way through. */
+.ah-exit-link {
+  position: fixed;
+  top: 3vh;
+  right: 4vw;
+  z-index: 400;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  padding: 0.7em 1.2em;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.ah-exit-link:hover {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
 /* ---------- the theater frame ---------- */
 
 /* Already fully closed on load — explosion.html's lightswitch is what
@@ -121,6 +146,11 @@ html, body {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.85);
+  /* Solid dark fill so the number reads clearly against busy sketch
+     frames underneath — a bare outline let the artwork show straight
+     through and swallowed the digit. */
+  background: rgba(0, 0, 0, 0.82);
+  box-shadow: 0 0 40px 10px rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,6 +161,7 @@ html, body {
   font-weight: 800;
   color: #fff;
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 .ah-countdown-num.pop {
@@ -182,6 +213,38 @@ html, body {
   color: #000;
 }
 
+/* Credit line, tucked low in the frame — only relevant once the video
+   is actually up, so it fades in alongside it rather than sitting there
+   the whole scroll. */
+.ah-credit {
+  position: absolute;
+  bottom: 4vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease 0.6s;
+}
+
+.ah-video.visible ~ .ah-credit {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ah-credit a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+}
+
+.ah-credit a:hover {
+  color: #fff;
+}
+
 /* ---------- the end ---------- */
 
 .ah-end {
@@ -204,6 +267,62 @@ html, body {
 
 .ah-end a:hover {
   opacity: 0.7;
+}
+
+.ah-end-hint {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  animation: ah-hint-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ah-hint-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+/* ---------- reel change (hand-off into after-hours-2.html) ---------- */
+
+/* A quick projector-flicker rather than a literal reuse of the
+   earlier-work.html -> seascapes.html tide wash — same mechanism (scroll
+   to the true bottom, play a transition, navigate, land already-settled
+   at the top of the next page) but re-themed: a couple of light-leak
+   flashes over black, since this page is already dark/theatrical rather
+   than the bright gallery the tide wash lives on. */
+.ah-reload {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.ah-reload.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ah-reload-flicker {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+}
+
+.ah-reload.active .ah-reload-flicker {
+  animation: ah-flicker 1s steps(1) forwards;
+}
+
+@keyframes ah-flicker {
+  0%   { opacity: 0; }
+  8%   { opacity: 0.5; }
+  16%  { opacity: 0.05; }
+  24%  { opacity: 0.3; }
+  34%  { opacity: 0.05; }
+  100% { opacity: 0; }
 }
 
 @media (max-width: 700px) {
