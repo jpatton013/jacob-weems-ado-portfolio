@@ -425,9 +425,9 @@
   // they're the ones the viewer was just scrolling past, not some
   // random handful from anywhere in the whole 300+ image field), switch
   // over from the field's normal document-flow positioning to
-  // position:fixed captured at exactly their current on-screen spot —
-  // no jump — and drift into a loose pile together as .gather-spacer
-  // scrolls by. Same real tile, same img element, the whole way through.
+  // position:fixed and drift into a loose pile together as
+  // .gather-spacer scrolls by. Same real tile, same img element, the
+  // whole way through.
   var gatherSpacer = document.getElementById("gather-spacer");
   var gatherViewport = document.getElementById("gather-viewport");
   var gatherButton = document.getElementById("gather-button");
@@ -457,40 +457,50 @@
     var gCenterY = gvh / 2;
     var gClusterRadius = Math.min(gvw, gvh) * 0.28;
 
+    // .float-field's own document offset, measured once — needed to
+    // convert a chosen tile's field-relative (t.x, t.y) into a document
+    // position, and from there into "where would this tile be on screen
+    // right now" for any given scroll position.
+    var fieldRect = field.getBoundingClientRect();
+    var fieldDocX = fieldRect.left + window.scrollX;
+    var fieldDocY = fieldRect.top + window.scrollY;
+
     // End position (where each chosen tile settles in the pile) is fixed
-    // up front — only the start position depends on scroll timing, which
-    // is captured later, right when the handoff actually happens.
+    // up front, once.
     chosen.forEach(function (t) {
       var angle = rand(0, Math.PI * 2);
       var dist = rand(0, gClusterRadius);
       t.gatherEndX = gCenterX + Math.cos(angle) * dist - t.size / 2;
       t.gatherEndY = gCenterY + Math.sin(angle) * dist - t.size / 2;
       t.gatherEndRot = rand(-16, 16);
+      t.gatherStartRot = rand(-8, 8);
     });
 
     var handoffDone = false;
 
-    // The moment scrolling first reaches the gather section: freeze each
-    // chosen tile's field physics (same freeze used for expand()) and
-    // capture exactly where it's sitting on screen right now as a fixed-
-    // position start point. This is what makes the handoff invisible —
-    // the tile doesn't move at all at the instant it switches modes.
+    // Freezes each chosen tile's field physics (same freeze used for
+    // expand()) and switches it to position:fixed. Deliberately does
+    // NOT capture a start position here — applyGatherProgress below
+    // recomputes each tile's "natural" on-screen spot fresh every single
+    // frame from its field-relative coordinates and the current scroll
+    // position, rather than snapshotting it once at the instant the
+    // handoff happens. A one-time snapshot was the actual cause of the
+    // "blank page, then the mess reappears" gap: if the handoff fired
+    // after a big scroll jump, the captured rect could already be a
+    // long way above the viewport, and the tile would spend the first
+    // stretch of the gather animation just catching up from off-screen.
+    // Recomputing every frame means there's nothing to catch up from —
+    // the tile is always exactly where it would naturally be.
     function handoff() {
       if (handoffDone) return;
       handoffDone = true;
       chosen.forEach(function (t) {
-        var rect = t.el.getBoundingClientRect();
         t.frozen = true;
         t.spring.style.transform = "";
         t.floatEl.style.animationName = "none";
         t.floatEl.style.transform = "none";
         t.el.style.position = "fixed";
-        t.el.style.left = rect.left + "px";
-        t.el.style.top = rect.top + "px";
         t.el.style.zIndex = "40";
-        t.gatherStartX = rect.left;
-        t.gatherStartY = rect.top;
-        t.gatherStartRot = rand(-8, 8);
       });
     }
 
@@ -523,10 +533,16 @@
       }
       handoff();
       var eased = gEaseInOut(p);
+      var scrollY = window.scrollY;
       for (var i = 0; i < chosen.length; i++) {
         var t = chosen[i];
-        var x = t.gatherStartX + (t.gatherEndX - t.gatherStartX) * eased;
-        var y = t.gatherStartY + (t.gatherEndY - t.gatherStartY) * eased;
+        // Recomputed fresh every call, not cached: exactly where this
+        // tile would be sitting right now if it were still an ordinary,
+        // untouched field tile.
+        var naturalX = fieldDocX + t.x;
+        var naturalY = fieldDocY + t.y - scrollY;
+        var x = naturalX + (t.gatherEndX - naturalX) * eased;
+        var y = naturalY + (t.gatherEndY - naturalY) * eased;
         var rot = t.gatherStartRot + (t.gatherEndRot - t.gatherStartRot) * eased;
         t.el.style.left = x + "px";
         t.el.style.top = y + "px";

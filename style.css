@@ -171,6 +171,17 @@ html, body {
 
 .opener-split img {
   flex: 1 1 0;
+  /* Flex items default to a min-width equal to their own content size —
+     for a replaced element like <img> that means its natural intrinsic
+     width (762px here), not 0. With flex-basis:0 the two images were
+     still never allowed to actually shrink below that intrinsic width
+     between them, so on a ~375px phone screen the row demanded ~1524px
+     total and just overflowed sideways — the second half wasn't stacked
+     or hidden on purpose, it was pushed off past the right edge and
+     clipped by .opener's overflow:hidden, with no way to scroll to it.
+     This is what actually lets the flex row shrink both halves down to
+     a true 50/50 split at any viewport width, mobile included. */
+  min-width: 0;
   width: auto;
   height: 100%;
   object-fit: contain;
@@ -396,22 +407,20 @@ img.swap:hover {
 }
 
 @media (max-width: 700px) {
+  /* Stays one row of all five, same idea as the flower still lifes
+     (row-3) — squeezed, not stacked. Height comes down from the
+     desktop's 92vh since five panels this narrow don't need to be
+     nearly full-screen tall to still read clearly. */
   .panel-row {
-    flex-direction: column;
-    height: auto;
+    height: 42vh;
   }
   .panel-row figure {
-    /* The base rule sets flex: 1 1 0 (flex-basis: 0), which is meant
-       for the row layout on desktop. In a column direction with an
-       auto-height container, that flex-basis of 0 wins over the height
-       below for sizing the main axis, so every panel was collapsing to
-       zero height instead of the intended 60vh — which is why the
-       whole piece was disappearing on mobile rather than just stacking.
-       Overriding flex to a fixed, non-growing basis here makes the
-       explicit height actually apply. */
-    flex: none;
-    width: 100%;
-    height: 60vh;
+    /* Same min-width:0 fix as the diptych above — .panel-row figure is
+       a flex item with flex:1 1 0 from the base rule, and without this
+       its automatic minimum width would be based on the img's own
+       intrinsic size, which five of side by side would badly overflow
+       a phone-width screen instead of actually shrinking to fit. */
+    min-width: 0;
   }
 }
 

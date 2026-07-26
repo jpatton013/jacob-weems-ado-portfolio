@@ -201,7 +201,10 @@ html, body {
 
 .gather-spacer {
   position: relative;
-  height: 280vh;
+  /* Was 280vh — most of that was scroll distance spent fully gathered
+     already, with the button showing and nothing left changing on
+     screen, which is the "too far" dead stretch at the very end. */
+  height: 170vh;
 }
 
 /* Same deliberately-not-sticky manual pin as the zoom-out on the main
