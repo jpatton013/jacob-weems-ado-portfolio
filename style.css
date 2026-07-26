@@ -11,6 +11,44 @@ html, body {
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* ---------- mini contact (small, tucked corner — used on every page
+   except the landing page itself, which already has the full contact
+   block at top and bottom) ---------- */
+
+.mini-contact {
+  position: fixed;
+  bottom: 2.5vh;
+  right: 3vw;
+  z-index: 50;
+  display: flex;
+  gap: 1.2em;
+}
+
+.mini-contact a {
+  color: rgba(17, 17, 17, 0.45);
+  text-decoration: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.mini-contact a:hover {
+  color: #111;
+}
+
+@media (max-width: 700px) {
+  .mini-contact {
+    bottom: 1.8vh;
+    right: 4vw;
+    gap: 1em;
+  }
+
+  .mini-contact a {
+    font-size: 0.6rem;
+  }
+}
+
 /* ---------- back link (used on the secondary pages) ---------- */
 
 .back-link {

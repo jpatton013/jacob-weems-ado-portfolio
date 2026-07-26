@@ -34,6 +34,44 @@ html, body {
   border-color: #fff;
 }
 
+/* Small, tucked corner — same idea as the mini contact links on the
+   other secondary pages, just light-on-dark and raised above the
+   letterbox bars (z-index 300) so it isn't sitting invisibly behind
+   them like the credit line was before that got fixed. */
+.mini-contact {
+  position: fixed;
+  bottom: 2.5vh;
+  right: 3vw;
+  z-index: 320;
+  display: flex;
+  gap: 1.2em;
+}
+
+.mini-contact a {
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.mini-contact a:hover {
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .mini-contact {
+    bottom: 1.8vh;
+    right: 4vw;
+    gap: 1em;
+  }
+
+  .mini-contact a {
+    font-size: 0.6rem;
+  }
+}
+
 /* Static for the whole scroll, not just at the end — a quiet, always-
    available way back to the mess page. Same position as explosion.html's
    lightswitch (right next to that page's back link), just inverted to a

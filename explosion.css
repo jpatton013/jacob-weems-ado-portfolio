@@ -33,6 +33,43 @@ html, body {
   color: #fff;
 }
 
+/* Small, tucked corner — same idea as the mini contact links on the
+   other secondary pages, just with a higher z-index here since this
+   page's scattered tiles and gather pile climb up past 280. */
+.mini-contact {
+  position: fixed;
+  bottom: 2.5vh;
+  right: 3vw;
+  z-index: 300;
+  display: flex;
+  gap: 1.2em;
+}
+
+.mini-contact a {
+  color: rgba(17, 17, 17, 0.45);
+  text-decoration: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.mini-contact a:hover {
+  color: #111;
+}
+
+@media (max-width: 700px) {
+  .mini-contact {
+    bottom: 1.8vh;
+    right: 4vw;
+    gap: 1em;
+  }
+
+  .mini-contact a {
+    font-size: 0.6rem;
+  }
+}
+
 /* The field's height is set inline by explosion.js, based on how many
    tiles there are — it's just a tall canvas that the tiles are
    absolutely positioned within. */
