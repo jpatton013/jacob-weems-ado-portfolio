@@ -225,6 +225,40 @@
   window.addEventListener("resize", checkBottom);
 })();
 
+// ---------- opener water-edge settle (relax.html only) ----------
+// The animated ripple overlay on the opener's edges (see #opener-water
+// in relax.html) dissolves into the plain still image as soon as you
+// start scrolling, rather than running forever — same manual scroll-
+// tie-in pattern as the rest of the site's scroll effects, just driving
+// opacity instead of a pin.
+(function () {
+  "use strict";
+
+  var overlay = document.getElementById("opener-water");
+  if (!overlay) return;
+
+  // Fully settled by this many pixels of scroll.
+  var FADE_DISTANCE = 500;
+  var ticking = false;
+
+  function update() {
+    var p = Math.min(1, Math.max(0, window.scrollY / FADE_DISTANCE));
+    overlay.style.opacity = String(1 - p);
+  }
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      update();
+      ticking = false;
+    });
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  update();
+})();
+
 // ---------- arrival tide (relax.html only) ----------
 // Starts covering the whole screen (set in CSS by default, no .dismissed
 // class yet) and drains away downward a moment after load — orients the

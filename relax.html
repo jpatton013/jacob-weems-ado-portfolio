@@ -30,6 +30,16 @@
       </feTurbulence>
       <feColorMatrix in="grain-noise" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0"/>
     </filter>
+    <!-- Gentler cousin of ripple-distort, tuned for warping a photo/
+         painting instead of a flat color wipe — slower and much smaller
+         displacement so it reads as a soft drift over the canvas rather
+         than a heavy wave. Used on the opener's water-edge overlay. -->
+    <filter id="opener-ripple" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" seed="7" result="opener-noise">
+        <animate attributeName="baseFrequency" dur="9s" values="0.008 0.014;0.014 0.009;0.008 0.014" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="opener-noise" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
   </defs>
 </svg>
 
@@ -85,6 +95,14 @@
      with no letterboxing. -->
 <figure class="opener opener-fill">
   <img src="images/earlier-water.jpg" alt="Painting">
+  <!-- Same image again, layered on top and masked so only its outer
+       thirds are visible, distorted through #opener-ripple above so
+       those edges read as water drifting/floating over him while his
+       face — unmasked, from the plain img beneath — stays still and
+       sharp. earlier-work.js fades this overlay out over the first
+       stretch of scroll, so it settles into the calm, fully still
+       image once you start moving through the gallery. -->
+  <img class="opener-water" id="opener-water" src="images/earlier-water.jpg" alt="" aria-hidden="true">
   <div class="scroll-hint">scroll</div>
 </figure>
 
@@ -101,8 +119,6 @@
     <figure class="reveal"><img src="images/earlier/earlier-03.jpg" alt="Painting" loading="lazy"></figure>
     <figure class="reveal"><img src="images/earlier/earlier-04.jpg" alt="Painting" loading="lazy"></figure>
   </div>
-
-  <figure class="plate full reveal"><img src="images/earlier/earlier-05.jpg" alt="Painting" loading="lazy"></figure>
 
   <figure class="plate s-md align-c reveal"><img src="images/earlier/earlier-06.jpg" alt="Painting" loading="lazy"></figure>
 
@@ -122,8 +138,6 @@
   <figure class="plate s-lg2 align-r rot-n reveal"><img src="images/earlier/earlier-13.jpg" alt="Painting" loading="lazy"></figure>
 
   <figure class="plate full reveal"><img src="images/earlier/earlier-14.jpg" alt="Painting" loading="lazy"></figure>
-
-  <figure class="plate s-sm align-l reveal"><img src="images/earlier/earlier-15.jpg" alt="Painting" loading="lazy"></figure>
 
   <div class="row row-2">
     <figure class="row-wide reveal"><img src="images/earlier/earlier-16.jpg" alt="Painting" loading="lazy"></figure>

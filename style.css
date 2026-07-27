@@ -141,15 +141,42 @@ html, body {
   display: block;
 }
 
-/* Used only on earlier-work.html's opener — the opposite of the rule
-   above on purpose: fills the entire viewport with no letterboxing,
-   cropping instead of containing. */
+/* Used only on relax.html's opener — the opposite of the rule above on
+   purpose: fills the entire viewport with no letterboxing, cropping
+   instead of containing. */
 .opener-fill {
   background: none;
 }
 
 .opener-fill img {
   object-fit: cover;
+  /* The face sits in the upper portion of this painting. Centered
+     cropping (the default 50%) split the overflow evenly top/bottom,
+     which on a short/wide window cut straight through the face rather
+     than trimming the paint-swirl background below it. Biasing hard
+     toward the top means any vertical crop comes almost entirely out
+     of the bottom instead. */
+  object-position: center 10%;
+}
+
+/* Second, identical copy of the opener image, layered on top and
+   masked so only its outer thirds show — see the markup comment in
+   relax.html for how this reads as "water floating over him" on the
+   sides while his face stays still and sharp underneath. Distorted via
+   the #opener-ripple filter (defined in relax.html, same animated-
+   turbulence technique as the tide transitions on this page); fades
+   out as you scroll, handled in earlier-work.js. */
+.opener-water {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 10%;
+  pointer-events: none;
+  filter: url(#opener-ripple);
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
+  mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
 }
 
 /* Two full-resolution halves side by side, meant to read as one diptych
