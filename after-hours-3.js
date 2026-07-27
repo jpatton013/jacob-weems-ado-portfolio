@@ -1,8 +1,8 @@
-// after-hours-3.html only: same scroll-scrub setup as the first two
+// lightsoff3.html only: same scroll-scrub setup as the first two
 // reels, pointed at the third piece's 32 frames. No finished film for
 // this one yet and no countdown (piece-1-only) — it fails silently and
 // just holds on the last frame if videos/reel-3.mp4 isn't there yet.
-// Chains onward to after-hours-4.html.
+// Chains onward to lightsoff4.html.
 
 (function () {
   "use strict";
@@ -173,7 +173,7 @@
   refresh();
 })();
 
-// ---- reel-change hand-off into after-hours-4.html ----
+// ---- reel-change hand-off into lightsoff4.html ----
 (function () {
   "use strict";
 
@@ -195,7 +195,7 @@
     overlay.classList.add("active");
 
     setTimeout(function () {
-      window.location.href = "after-hours-4.html";
+      window.location.href = "lightsoff4.html";
     }, 1100);
   }
 
@@ -222,7 +222,7 @@
   }
   if (!resume || !resume.page) return;
 
-  var thisPage = window.location.pathname.split("/").pop() || "after-hours-3.html";
+  var thisPage = window.location.pathname.split("/").pop() || "lightsoff3.html";
   if (resume.page !== thisPage) return;
 
   var target = resume.scrollY || 0;

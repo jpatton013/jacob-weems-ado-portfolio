@@ -174,7 +174,7 @@
   // handler above) opens the floating detail-fragments page.
   grid.addEventListener("click", function () {
     if (gridSettled) {
-      window.location.href = "explosion.html";
+      window.location.href = "mess.html";
     }
   });
 

@@ -1,4 +1,4 @@
-// after-hours-4.html only: same scroll-scrub setup as the earlier
+// lightsoff4.html only: same scroll-scrub setup as the earlier
 // reels, pointed at the fourth piece's 80 frames. No finished film for
 // this one yet and no countdown (piece-1-only) — it fails silently and
 // just holds on the last frame if videos/reel-4.mp4 isn't there yet.
@@ -204,7 +204,7 @@
   }
   if (!resume || !resume.page) return;
 
-  var thisPage = window.location.pathname.split("/").pop() || "after-hours-4.html";
+  var thisPage = window.location.pathname.split("/").pop() || "lightsoff4.html";
   if (resume.page !== thisPage) return;
 
   var target = resume.scrollY || 0;

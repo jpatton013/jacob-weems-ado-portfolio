@@ -1,8 +1,8 @@
 // Shared across every after-hours-*.html reel page: the persistent
 // white circle button that fades the theater back up and returns to
-// explosion.html. Mirrors lights-out.js's dim-and-close, just reversed —
+// mess.html. Mirrors lights-out.js's dim-and-close, just reversed —
 // the bars open, the vignette fades, and a white scrim rises over
-// everything, so the swap back into explosion.html (which is always
+// everything, so the swap back into mess.html (which is always
 // sitting there bright) reads as one continuous fade rather than a cut.
 //
 // Also remembers where you were: which piece and how far scrolled into
@@ -35,7 +35,7 @@
         // session so the next lights-off starts fresh at piece one.
         localStorage.removeItem("ahResume");
       } else {
-        var page = window.location.pathname.split("/").pop() || "after-hours.html";
+        var page = window.location.pathname.split("/").pop() || "lightsoff1.html";
         localStorage.setItem(
           "ahResume",
           JSON.stringify({ page: page, scrollY: window.scrollY })
@@ -50,7 +50,7 @@
     if (scrim) scrim.classList.add("active");
 
     setTimeout(function () {
-      window.location.href = "explosion.html";
+      window.location.href = "mess.html";
     }, 1500);
   });
 })();

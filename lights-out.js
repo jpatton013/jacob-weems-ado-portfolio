@@ -1,6 +1,6 @@
-// explosion.html only: the hidden lightswitch. Clicking it dims the
+// mess.html only: the hidden lightswitch. Clicking it dims the
 // whole page to black and closes the letterbox bars in, then hands off
-// to after-hours.html once that finishes — after-hours.html starts
+// to lightsoff1.html once that finishes — lightsoff1.html starts
 // already in the dark/letterboxed state, so the page swap underneath
 // is invisible and the whole thing reads as one continuous reveal
 // rather than a navigation.
@@ -22,7 +22,7 @@
     // If a reel page was left via its own "lights back on" button, it
     // saved which piece and how far scrolled — pick that back up
     // instead of always starting over at the first reel.
-    var dest = "after-hours.html";
+    var dest = "lightsoff1.html";
     try {
       var saved = localStorage.getItem("ahResume");
       if (saved) {

@@ -1,4 +1,4 @@
-// after-hours.html only: scroll scrubs through the 102 sketch frames,
+// lightsoff1.html only: scroll scrubs through the 102 sketch frames,
 // then an old-movie countdown and the finished film take over on their
 // own once you've scrolled far enough to reach the last one.
 
@@ -121,7 +121,7 @@
   }
 
   // ---- manual pin — same fixed/absolute toggling approach as the main
-  // page's zoom-out gallery and explosion.html's gather scene, not
+  // page's zoom-out gallery and mess.html's gather scene, not
   // position:sticky, for the same cross-browser reasons those use it. ----
   var viewportHeight = 0;
   var spacerHeight = 0;
@@ -216,7 +216,7 @@
   refresh();
 })();
 
-// ---- reel-change hand-off into after-hours-2.html ----
+// ---- reel-change hand-off into lightsoff2.html ----
 // Same idea as earlier-work.js's tide-wash trigger: watch for the user
 // scrolling to the true bottom of the page (not just the end of the
 // pinned spacer above), play a short transition, then navigate. The
@@ -244,7 +244,7 @@
     overlay.classList.add("active");
 
     setTimeout(function () {
-      window.location.href = "after-hours-2.html";
+      window.location.href = "lightsoff2.html";
     }, 1100);
   }
 
@@ -276,7 +276,7 @@
   }
   if (!resume || !resume.page) return;
 
-  var thisPage = window.location.pathname.split("/").pop() || "after-hours.html";
+  var thisPage = window.location.pathname.split("/").pop() || "lightsoff1.html";
   if (resume.page !== thisPage) return;
 
   var target = resume.scrollY || 0;

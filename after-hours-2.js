@@ -1,4 +1,4 @@
-// after-hours-2.html only: same scroll-scrub setup as after-hours.js,
+// lightsoff2.html only: same scroll-scrub setup as after-hours.js,
 // pointed at the second piece's 38 frames. There's no finished film for
 // this piece yet, and no countdown either (that's piece-1-only, since
 // it's the only reel with something to actually count down into) — once
@@ -183,7 +183,7 @@
   refresh();
 })();
 
-// ---- reel-change hand-off into after-hours-3.html ----
+// ---- reel-change hand-off into lightsoff3.html ----
 // Same trigger as after-hours.js: scroll to the true bottom of the page
 // and it flickers into the next piece, reset to the top.
 (function () {
@@ -207,7 +207,7 @@
     overlay.classList.add("active");
 
     setTimeout(function () {
-      window.location.href = "after-hours-3.html";
+      window.location.href = "lightsoff3.html";
     }, 1100);
   }
 
@@ -234,7 +234,7 @@
   }
   if (!resume || !resume.page) return;
 
-  var thisPage = window.location.pathname.split("/").pop() || "after-hours-2.html";
+  var thisPage = window.location.pathname.split("/").pop() || "lightsoff2.html";
   if (resume.page !== thisPage) return;
 
   var target = resume.scrollY || 0;

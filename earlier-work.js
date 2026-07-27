@@ -1,4 +1,4 @@
-// earlier-work.html only: scroll-reveal for the gallery, and a small
+// relax.html only: scroll-reveal for the gallery, and a small
 // procedural ambient "water" sound behind an opt-in toggle.
 
 (function () {
@@ -179,11 +179,11 @@
   });
 })();
 
-// ---------- wave-wash transition (earlier-work.html only) ----------
+// ---------- wave-wash transition (relax.html only) ----------
 // Clear the last portrait and hit the true bottom of the page (no added
 // scroll distance) and a wave painting washes over the screen, then
-// carries you on to seascapes.html. Shared script file, so this no-ops
-// on any page without a #wave-trigger (seascapes.html included).
+// carries you on to waves.html. Shared script file, so this no-ops
+// on any page without a #wave-trigger (waves.html included).
 (function () {
   "use strict";
 
@@ -200,7 +200,7 @@
     // Tide finishes rising at 1.4s; hold on the fully-covered, still-
     // shimmering frame for a beat before handing off to the next page.
     setTimeout(function () {
-      window.location.href = "seascapes.html";
+      window.location.href = "waves.html";
     }, 1900);
   }
 
@@ -225,11 +225,11 @@
   window.addEventListener("resize", checkBottom);
 })();
 
-// ---------- arrival tide (earlier-work.html only) ----------
+// ---------- arrival tide (relax.html only) ----------
 // Starts covering the whole screen (set in CSS by default, no .dismissed
 // class yet) and drains away downward a moment after load — orients the
 // viewer into the water theme instead of a hard cut in from
-// explosion.html. No-ops on pages without #page-enter.
+// mess.html. No-ops on pages without #page-enter.
 (function () {
   "use strict";
 
@@ -239,7 +239,7 @@
   // A single requestAnimationFrame can get coalesced by the browser with
   // the next paint and skip straight to the end state, so the class add
   // is deferred two frames deep (same fix used for the click-to-expand
-  // tiles on explosion.html) to guarantee the browser paints the fully-
+  // tiles on mess.html) to guarantee the browser paints the fully-
   // covered starting frame before the drain transition begins.
   requestAnimationFrame(function () {
     requestAnimationFrame(function () {
