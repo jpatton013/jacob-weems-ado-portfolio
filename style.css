@@ -180,9 +180,20 @@ html, body {
    through with no distortion). It's there the whole time — hidden
    under .opener-water-wash at first, then revealed once that fades —
    and keeps a gentle ambient ripple on just the edges going until you
-   scroll, at which point earlier-work.js fades this one out too. */
-.opener-water,
-.opener-water-wash {
+   scroll, at which point earlier-work.js fades this one out too.
+
+   Selected by ID (#opener-water / #opener-water-wash), not by class —
+   the earlier, more general ".opener img" rule up above also matches
+   these two (they're <img> tags inside .opener) and sets width/height
+   to 100%. That rule's selector (".opener img") is more specific than
+   a bare class selector, so it was winning the cascade over a
+   class-based rule here regardless of source order, silently forcing
+   these back to full-size before the transform:scale(2) below then
+   doubled THAT — the actual cause of the "zoomed in and weird" bug.
+   ID selectors outrank it outright, so the 50%/50% sizing below
+   actually sticks. */
+#opener-water,
+#opener-water-wash {
   position: absolute;
   top: 0;
   left: 0;
@@ -197,17 +208,17 @@ html, body {
   will-change: opacity;
 }
 
-.opener-water {
+#opener-water {
   -webkit-mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
   mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
 }
 
-.opener-water-wash {
+#opener-water-wash {
   opacity: 1;
   transition: opacity 2.4s ease-out;
 }
 
-.opener-water-wash.settled {
+#opener-water-wash.settled {
   opacity: 0;
 }
 
