@@ -159,24 +159,56 @@ html, body {
   object-position: center 10%;
 }
 
-/* Second, identical copy of the opener image, layered on top and
-   masked so only its outer thirds show — see the markup comment in
-   relax.html for how this reads as "water floating over him" on the
-   sides while his face stays still and sharp underneath. Distorted via
-   the #opener-ripple filter (defined in relax.html, same animated-
-   turbulence technique as the tide transitions on this page); fades
-   out as you scroll, handled in earlier-work.js. */
-.opener-water {
+/* Two more identical copies of the opener image, layered on top and
+   distorted via #opener-ripple (defined in relax.html, same animated-
+   turbulence technique as the tide transitions on this page). Both are
+   rendered at half size and scaled back up via transform, rather than
+   at their true 100% width/height — the filter only ever has a quarter
+   as many pixels to push around each frame that way. A full-resolution
+   feDisplacementMap across a whole-viewport image was the actual
+   source of the choppiness, not the animation's timing/speed. The
+   slight extra softness this adds just reads as part of the water.
+
+   .opener-water-wash sits on top, full-bleed and unmasked, so at first
+   it reads as water moving over the whole piece, face included.
+   earlier-work.js fades it out a couple seconds after load (a plain
+   opacity transition — cheap and smooth), which is what makes it read
+   as the water washing over him and then receding/settling.
+
+   .opener-water sits beneath it, masked down to the outer thirds only
+   (center transparent, so the base still image beneath shows straight
+   through with no distortion). It's there the whole time — hidden
+   under .opener-water-wash at first, then revealed once that fades —
+   and keeps a gentle ambient ripple on just the edges going until you
+   scroll, at which point earlier-work.js fades this one out too. */
+.opener-water,
+.opener-water-wash {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 50%;
+  transform: scale(2);
+  transform-origin: top left;
   object-fit: cover;
   object-position: center 10%;
   pointer-events: none;
   filter: url(#opener-ripple);
+  will-change: opacity;
+}
+
+.opener-water {
   -webkit-mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
   mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 38%, transparent 62%, #000 84%, #000 100%);
+}
+
+.opener-water-wash {
+  opacity: 1;
+  transition: opacity 2.4s ease-out;
+}
+
+.opener-water-wash.settled {
+  opacity: 0;
 }
 
 /* Two full-resolution halves side by side, meant to read as one diptych

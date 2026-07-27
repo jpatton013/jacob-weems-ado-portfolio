@@ -259,6 +259,25 @@
   update();
 })();
 
+// ---------- opener water-wash entrance (relax.html only) ----------
+// #opener-water-wash starts full-bleed and fully opaque (see relax.html
+// markup comment) — this just adds .settled a beat after load, which
+// CSS transitions to opacity 0 over 2.4s. That's the whole "water
+// washes over him, then recedes/settles" effect: nothing is drawn here,
+// it's purely handing off to the CSS transition already in style.css.
+(function () {
+  "use strict";
+
+  var wash = document.getElementById("opener-water-wash");
+  if (!wash) return;
+
+  // A beat after the arrival tide (.page-enter) finishes draining, so
+  // the two don't visually compete right on top of each other.
+  setTimeout(function () {
+    wash.classList.add("settled");
+  }, 500);
+})();
+
 // ---------- arrival tide (relax.html only) ----------
 // Starts covering the whole screen (set in CSS by default, no .dismissed
 // class yet) and drains away downward a moment after load — orients the
