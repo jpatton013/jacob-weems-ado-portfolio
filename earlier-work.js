@@ -225,59 +225,6 @@
   window.addEventListener("resize", checkBottom);
 })();
 
-// ---------- opener water-edge settle (relax.html only) ----------
-// The animated ripple overlay on the opener's edges (see #opener-water
-// in relax.html) dissolves into the plain still image as soon as you
-// start scrolling, rather than running forever — same manual scroll-
-// tie-in pattern as the rest of the site's scroll effects, just driving
-// opacity instead of a pin.
-(function () {
-  "use strict";
-
-  var overlay = document.getElementById("opener-water");
-  if (!overlay) return;
-
-  // Fully settled by this many pixels of scroll.
-  var FADE_DISTANCE = 500;
-  var ticking = false;
-
-  function update() {
-    var p = Math.min(1, Math.max(0, window.scrollY / FADE_DISTANCE));
-    overlay.style.opacity = String(1 - p);
-  }
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(function () {
-      update();
-      ticking = false;
-    });
-  }
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  update();
-})();
-
-// ---------- opener water-wash entrance (relax.html only) ----------
-// #opener-water-wash starts full-bleed and fully opaque (see relax.html
-// markup comment) — this just adds .settled a beat after load, which
-// CSS transitions to opacity 0 over 2.4s. That's the whole "water
-// washes over him, then recedes/settles" effect: nothing is drawn here,
-// it's purely handing off to the CSS transition already in style.css.
-(function () {
-  "use strict";
-
-  var wash = document.getElementById("opener-water-wash");
-  if (!wash) return;
-
-  // A beat after the arrival tide (.page-enter) finishes draining, so
-  // the two don't visually compete right on top of each other.
-  setTimeout(function () {
-    wash.classList.add("settled");
-  }, 500);
-})();
-
 // ---------- arrival tide (relax.html only) ----------
 // Starts covering the whole screen (set in CSS by default, no .dismissed
 // class yet) and drains away downward a moment after load — orients the

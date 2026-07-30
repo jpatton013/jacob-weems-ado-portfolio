@@ -435,21 +435,12 @@
   if (gatherSpacer && gatherViewport && tiles.length) {
     var GATHER_TILE_COUNT = Math.min(70, tiles.length);
 
-    // Sort by vertical position in the field (descending) and pull from
-    // a pool a bit wider than what's actually needed, then shuffle that
-    // pool — biased toward the bottom of the field without it being the
-    // exact same handful of tiles in the same rows on every visit.
+    // Use the actual lowest tiles. Selecting from a much wider shuffled
+    // pool could start with tiles already well above the viewport.
     var byY = tiles.slice().sort(function (a, b) {
       return b.y - a.y;
     });
-    var gatherPool = byY.slice(0, Math.min(GATHER_TILE_COUNT * 2, tiles.length));
-    for (var gp = gatherPool.length - 1; gp > 0; gp--) {
-      var gk = Math.floor(Math.random() * (gp + 1));
-      var gtmp = gatherPool[gp];
-      gatherPool[gp] = gatherPool[gk];
-      gatherPool[gk] = gtmp;
-    }
-    var chosen = gatherPool.slice(0, GATHER_TILE_COUNT);
+    var chosen = byY.slice(0, GATHER_TILE_COUNT);
 
     var gvw = window.innerWidth;
     var gvh = window.innerHeight;
@@ -529,6 +520,7 @@
     function applyGatherProgress(p) {
       if (p <= 0) {
         revert();
+        if (gatherButton) gatherButton.classList.remove("visible");
         return;
       }
       handoff();
@@ -549,7 +541,9 @@
         t.el.style.transform = "rotate(" + rot + "deg)";
       }
       if (gatherButton) {
-        gatherButton.classList.toggle("visible", p > 0.97);
+        // The pile is already readable here. Waiting until 0.97 made
+        // mobile visitors effectively overscroll to reveal the button.
+        gatherButton.classList.toggle("visible", p >= 0.72);
       }
     }
 
