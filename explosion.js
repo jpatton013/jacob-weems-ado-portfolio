@@ -418,71 +418,63 @@
     // reflow naturally. A hard refresh re-scatters cleanly if needed.
   });
 
-  // ---- gather scene: the actual field tiles pull together -------------
-  // Not a separate scene with its own synthetic tile set (that's what
-  // this used to be) — a portion of the SAME tile elements from the
-  // field above, chosen from whichever ones sit lowest in the field (so
-  // they're the ones the viewer was just scrolling past, not some
-  // random handful from anywhere in the whole 300+ image field), switch
-  // over from the field's normal document-flow positioning to
-  // position:fixed and drift into a loose pile together as
-  // .gather-spacer scrolls by. Same real tile, same img element, the
-  // whole way through.
+  // ---- gather scene: same tiles, inside the final field viewport --------
+  // The gathering now happens during the last viewport of the tile field
+  // itself. There is no second scroll scene and no extra page after the
+  // field: at the natural bottom, the pile is complete and the button is
+  // already visible and clickable.
   var gatherSpacer = document.getElementById("gather-spacer");
   var gatherViewport = document.getElementById("gather-viewport");
   var gatherButton = document.getElementById("gather-button");
 
   if (gatherSpacer && gatherViewport && tiles.length) {
     var GATHER_TILE_COUNT = Math.min(70, tiles.length);
-
-    // Use the actual lowest tiles. Selecting from a much wider shuffled
-    // pool could start with tiles already well above the viewport.
-    var byY = tiles.slice().sort(function (a, b) {
-      return b.y - a.y;
-    });
-    var chosen = byY.slice(0, GATHER_TILE_COUNT);
-
-    var gvw = window.innerWidth;
-    var gvh = window.innerHeight;
-    var gCenterX = gvw / 2;
-    var gCenterY = gvh / 2;
-    var gClusterRadius = Math.min(gvw, gvh) * 0.28;
-
-    // .float-field's own document offset, measured once — needed to
-    // convert a chosen tile's field-relative (t.x, t.y) into a document
-    // position, and from there into "where would this tile be on screen
-    // right now" for any given scroll position.
-    var fieldRect = field.getBoundingClientRect();
-    var fieldDocX = fieldRect.left + window.scrollX;
-    var fieldDocY = fieldRect.top + window.scrollY;
-
-    // End position (where each chosen tile settles in the pile) is fixed
-    // up front, once.
-    chosen.forEach(function (t) {
-      var angle = rand(0, Math.PI * 2);
-      var dist = rand(0, gClusterRadius);
-      t.gatherEndX = gCenterX + Math.cos(angle) * dist - t.size / 2;
-      t.gatherEndY = gCenterY + Math.sin(angle) * dist - t.size / 2;
-      t.gatherEndRot = rand(-16, 16);
-      t.gatherStartRot = rand(-8, 8);
-    });
-
+    var chosen = [];
     var handoffDone = false;
+    var gvw = 0;
+    var gvh = 0;
+    var fieldDocX = 0;
+    var fieldDocY = 0;
+    var fieldHeightNow = 0;
 
-    // Freezes each chosen tile's field physics (same freeze used for
-    // expand()) and switches it to position:fixed. Deliberately does
-    // NOT capture a start position here — applyGatherProgress below
-    // recomputes each tile's "natural" on-screen spot fresh every single
-    // frame from its field-relative coordinates and the current scroll
-    // position, rather than snapshotting it once at the instant the
-    // handoff happens. A one-time snapshot was the actual cause of the
-    // "blank page, then the mess reappears" gap: if the handoff fired
-    // after a big scroll jump, the captured rect could already be a
-    // long way above the viewport, and the tile would spend the first
-    // stretch of the gather animation just catching up from off-screen.
-    // Recomputing every frame means there's nothing to catch up from —
-    // the tile is always exactly where it would naturally be.
-    function handoff() {
+    function chooseGatherTiles() {
+      // Undo any active handoff before replacing the chosen set.
+      if (handoffDone) revertGather();
+
+      gvw = window.innerWidth;
+      gvh = Math.max(
+        window.innerHeight,
+        (window.visualViewport && window.visualViewport.height) || 0
+      );
+
+      var fieldRect = field.getBoundingClientRect();
+      fieldDocX = fieldRect.left + window.scrollX;
+      fieldDocY = fieldRect.top + window.scrollY;
+      fieldHeightNow = field.offsetHeight;
+
+      // Pick tiles from the band that is actually on screen when the
+      // final-viewport animation begins. Choosing the absolute lowest
+      // tiles put them below the viewport and caused the white gap.
+      var targetY = Math.max(0, fieldHeightNow - gvh * 1.38);
+      chosen = tiles.slice().sort(function (a, b) {
+        return Math.abs(a.y - targetY) - Math.abs(b.y - targetY);
+      }).slice(0, GATHER_TILE_COUNT);
+
+      var centerX = gvw / 2;
+      var centerY = gvh / 2;
+      var radius = Math.min(gvw, gvh) * 0.28;
+
+      chosen.forEach(function (t) {
+        var angle = rand(0, Math.PI * 2);
+        var dist = rand(0, radius);
+        t.gatherEndX = centerX + Math.cos(angle) * dist - t.size / 2;
+        t.gatherEndY = centerY + Math.sin(angle) * dist - t.size / 2;
+        t.gatherEndRot = rand(-16, 16);
+        t.gatherStartRot = rand(-8, 8);
+      });
+    }
+
+    function handoffGather() {
       if (handoffDone) return;
       handoffDone = true;
       chosen.forEach(function (t) {
@@ -495,10 +487,7 @@
       });
     }
 
-    // Scrolling back up above the gather section undoes the handoff —
-    // tiles resume their normal spot and behavior back in the field
-    // rather than staying stuck mid-gather off-screen.
-    function revert() {
+    function revertGather() {
       if (!handoffDone) return;
       handoffDone = false;
       chosen.forEach(function (t) {
@@ -513,24 +502,22 @@
       });
     }
 
-    function gEaseInOut(p) {
-      return p * p * (3 - 2 * p); // smoothstep
+    function smoothstep(p) {
+      return p * p * (3 - 2 * p);
     }
 
     function applyGatherProgress(p) {
       if (p <= 0) {
-        revert();
+        revertGather();
         if (gatherButton) gatherButton.classList.remove("visible");
         return;
       }
-      handoff();
-      var eased = gEaseInOut(p);
+
+      handoffGather();
+      var eased = smoothstep(p);
       var scrollY = window.scrollY;
-      for (var i = 0; i < chosen.length; i++) {
-        var t = chosen[i];
-        // Recomputed fresh every call, not cached: exactly where this
-        // tile would be sitting right now if it were still an ordinary,
-        // untouched field tile.
+
+      chosen.forEach(function (t) {
         var naturalX = fieldDocX + t.x;
         var naturalY = fieldDocY + t.y - scrollY;
         var x = naturalX + (t.gatherEndX - naturalX) * eased;
@@ -539,91 +526,49 @@
         t.el.style.left = x + "px";
         t.el.style.top = y + "px";
         t.el.style.transform = "rotate(" + rot + "deg)";
-      }
-      if (gatherButton) {
-        // The pile is already readable here. Waiting until 0.97 made
-        // mobile visitors effectively overscroll to reveal the button.
-        gatherButton.classList.toggle("visible", p >= 0.72);
-      }
+      });
+
+      // Visible for the final third of the normal scroll—never dependent
+      // on rubber-band overscroll beyond the document boundary.
+      if (gatherButton) gatherButton.classList.toggle("visible", p >= 0.68);
     }
 
-    // ---- manual pin, identical approach to the main page's zoom-out ---
-    var gViewportHeight = 0;
-    var gSpacerHeight = 0;
-
-    function gPin(state, bottomOffset) {
-      if (state === "during") {
-        gatherViewport.style.position = "fixed";
-        gatherViewport.style.top = "0";
-      } else if (state === "after") {
-        gatherViewport.style.position = "absolute";
-        gatherViewport.style.top = bottomOffset + "px";
-      } else {
-        gatherViewport.style.position = "absolute";
-        gatherViewport.style.top = "0";
-      }
+    var gatherTicking = false;
+    function updateGather() {
+      var fieldBottom = fieldDocY + fieldHeightNow;
+      var endScroll = fieldBottom - gvh;
+      var startScroll = endScroll - gvh * 0.92;
+      var range = Math.max(1, endScroll - startScroll);
+      var p = (window.scrollY - startScroll) / range;
+      p = Math.max(0, Math.min(1, p));
+      applyGatherProgress(p);
     }
 
-    function gMeasure() {
-      gSpacerHeight = gatherSpacer.offsetHeight;
-      gViewportHeight = Math.max(
-        window.innerHeight,
-        (window.visualViewport && window.visualViewport.height) || 0
-      );
-    }
-
-    function gUpdate() {
-      var rect = gatherSpacer.getBoundingClientRect();
-      var total = gSpacerHeight - gViewportHeight;
-
-      if (total <= 0) {
-        gPin("before", 0);
-        applyGatherProgress(1);
-        return;
-      }
-
-      if (rect.top > 0) {
-        gPin("before", 0);
-        applyGatherProgress(0);
-      } else if (rect.bottom <= gViewportHeight) {
-        gPin("after", gSpacerHeight - gViewportHeight);
-        applyGatherProgress(1);
-      } else {
-        gPin("during", 0);
-        var p = -rect.top / total;
-        if (p < 0) p = 0;
-        if (p > 1) p = 1;
-        applyGatherProgress(p);
-      }
-    }
-
-    var gTicking = false;
-    function gOnScroll() {
-      if (gTicking) return;
-      gTicking = true;
+    function onGatherScroll() {
+      if (gatherTicking) return;
+      gatherTicking = true;
       requestAnimationFrame(function () {
-        gUpdate();
-        gTicking = false;
+        updateGather();
+        gatherTicking = false;
       });
     }
 
-    function gRefresh() {
-      gMeasure();
-      gPin("before", 0);
-      gUpdate();
+    function refreshGather() {
+      chooseGatherTiles();
+      updateGather();
     }
 
-    window.addEventListener("scroll", gOnScroll, { passive: true });
-    window.addEventListener("resize", gRefresh);
-    window.addEventListener("orientationchange", gRefresh);
+    window.addEventListener("scroll", onGatherScroll, { passive: true });
+    window.addEventListener("resize", refreshGather);
+    window.addEventListener("orientationchange", refreshGather);
     if (window.visualViewport) {
-      window.visualViewport.addEventListener("resize", gRefresh);
+      window.visualViewport.addEventListener("resize", refreshGather);
     }
     window.addEventListener("load", function () {
-      gRefresh();
-      setTimeout(gRefresh, 400);
+      refreshGather();
+      setTimeout(refreshGather, 400);
     });
 
-    gRefresh();
+    refreshGather();
   }
 })();

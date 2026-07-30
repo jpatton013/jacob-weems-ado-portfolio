@@ -159,6 +159,54 @@ html, body {
   object-position: center 10%;
 }
 
+/*
+   A single lightweight light-on-water wash over the Relax opener.
+   This does not duplicate, resize, filter, or distort the painting,
+   so the face cannot jump or zoom. Only opacity and a GPU-composited
+   transform animate: the soft caustic light passes down across the
+   image once, then disappears into the untouched still painting.
+*/
+.opener-caustics {
+  position: absolute;
+  inset: -22%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 20% 55% at 18% 45%, rgba(210, 248, 255, 0.48), transparent 68%),
+    radial-gradient(ellipse 16% 48% at 48% 35%, rgba(178, 235, 241, 0.38), transparent 70%),
+    radial-gradient(ellipse 22% 58% at 78% 50%, rgba(220, 255, 247, 0.42), transparent 68%),
+    linear-gradient(105deg, transparent 25%, rgba(215, 252, 255, 0.28) 43%, transparent 60%);
+  transform: translate3d(-3%, -24%, 0) scale(1.03) rotate(-2deg);
+  will-change: transform, opacity;
+  animation: opener-caustic-wash 3.8s 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes opener-caustic-wash {
+  0% {
+    opacity: 0;
+    transform: translate3d(-3%, -24%, 0) scale(1.03) rotate(-2deg);
+  }
+  18% {
+    opacity: 0.42;
+  }
+  65% {
+    opacity: 0.28;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(4%, 24%, 0) scale(1.12) rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opener-caustics {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* Two full-resolution halves side by side, meant to read as one diptych
    with just a hairline reveal between them — like the gap between two
    canvases hung side by side, not a full margin. object-fit:contain

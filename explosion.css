@@ -201,22 +201,20 @@ html, body {
 
 .gather-spacer {
   position: relative;
-  /* Overlap the final viewport of the tile field so the pull begins
-     while the mess is still visible, not after a blank white stretch. */
-  height: 205vh;
+  /* Occupies the same final viewport as the field rather than adding
+     another page beneath it. The gathering is driven from the field's
+     own final viewport in explosion.js. */
+  height: 100vh;
+  height: 100dvh;
   margin-top: -100vh;
+  margin-top: -100dvh;
 }
 
-/* Same deliberately-not-sticky manual pin as the zoom-out on the main
-   page — explosion.js toggles position/top inline based on scroll math.
-   No background of its own on purpose, unlike the earlier version of
-   this: the actual field tiles now do the gathering themselves (see
-   explosion.js), still living behind/around this element rather than
-   inside it, so an opaque background here would just paint over them
-   like a curtain. Leaving it transparent is what keeps the come-down
-   reading as the same continuous field instead of a new scene. */
+/* Fixed transparent control layer for the button. The actual images
+   remain the original field tiles and gather during the field's final
+   viewport; this layer adds no page or background of its own. */
 .gather-viewport {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
